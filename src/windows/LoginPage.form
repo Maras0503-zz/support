@@ -105,9 +105,10 @@
     </Component>
     <Component class="javax.swing.JPasswordField" name="passBox">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Maras0503"/>
+        <Property name="text" type="java.lang.String" value="maras0502"/>
       </Properties>
       <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="passBoxActionPerformed"/>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="passBoxKeyPressed"/>
       </Events>
     </Component>

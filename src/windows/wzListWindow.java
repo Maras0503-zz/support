@@ -84,7 +84,6 @@ public class wzListWindow extends javax.swing.JFrame {
         for(int i = 0; i < docList.size(); i++){
               WZTable.getModel().setValueAt(docList.get(i).getId(), i, 0);
               WZTable.getModel().setValueAt(docList.get(i).getDocNumber(), i, 1);
-              WZTable.getModel().setValueAt(docList.get(i).getDocYear(), i, 2);
               WZTable.getModel().setValueAt(docList.get(i).getDocContractorId(), i, 3);
               WZTable.getModel().setValueAt(docList.get(i).getDocContractorName(), i, 4);
               WZTable.getModel().setValueAt(docList.get(i).getDocDate(), i, 5);

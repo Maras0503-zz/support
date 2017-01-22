@@ -229,7 +229,7 @@ public class DbQueries {
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT document_id, document_date, document_accept_date, document_year, document_number, document_type"
+                    "SELECT document_id, document_date, document_accept_date, document_number, document_type"
                             + ", document_contractor_id, contractor_name FROM document_tab"
                             + " inner join contractor_tab on document_tab.document_contractor_id=contractor_tab.contractor_id"
                             + " where document_type=1 and document_number = 0 order by document_id desc"
@@ -239,16 +239,15 @@ public class DbQueries {
             while(conn.result.next()){
                 id = conn.result.getInt("document_id");
                 docNumber = conn.result.getInt("document_number");
-                docYear = conn.result.getInt("document_year");
                 docType = conn.result.getInt("document_type");
                 docDate = tm.longToTimestamp(conn.result.getLong("document_date"));
                 docAcceptDate = tm.longToTimestamp(conn.result.getLong("document_accept_date"));
                 docContractorName = conn.result.getString("contractor_name");
                 docContractorId = conn.result.getInt("document_contractor_id");
-                resultList.add(new DocEntity(id, docNumber, docYear, docType, docDate, docAcceptDate, docContractorName, docContractorId));
+                resultList.add(new DocEntity(id, docNumber, docType, docDate, docAcceptDate, docContractorName, docContractorId));
             }
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT document_id, document_date, document_accept_date, document_year, document_number, document_type"
+                    "SELECT document_id, document_date, document_accept_date, document_number, document_type"
                             + ", document_contractor_id, contractor_name FROM document_tab"
                             + " inner join contractor_tab on document_tab.document_contractor_id=contractor_tab.contractor_id"
                             + " where document_type=1 and document_number <> 0 order by document_number desc limit 30"
@@ -258,13 +257,12 @@ public class DbQueries {
             while(conn.result.next()){
                 id = conn.result.getInt("document_id");
                 docNumber = conn.result.getInt("document_number");
-                docYear = conn.result.getInt("document_year");
                 docType = conn.result.getInt("document_type");
                 docDate = tm.longToTimestamp(conn.result.getLong("document_date"));
                 docAcceptDate = tm.longToTimestamp(conn.result.getLong("document_accept_date"));
                 docContractorName = conn.result.getString("contractor_name");
                 docContractorId = conn.result.getInt("document_contractor_id");
-                resultList.add(new DocEntity(id, docNumber, docYear, docType, docDate, docAcceptDate, docContractorName, docContractorId));
+                resultList.add(new DocEntity(id, docNumber, docType, docDate, docAcceptDate, docContractorName, docContractorId));
             }
         }
         catch(SQLException e){
@@ -280,7 +278,7 @@ public class DbQueries {
         Timestamp docDate = Timestamp.valueOf("1970-01-01 00:00:00.0"), docAcceptDate = Timestamp.valueOf("1970-01-01 00:00:00.0");
         String docContractorName = "";
         DocEntity result;
-        result = new DocEntity(id, docNumber, docYear, docType, docDate, docAcceptDate, docContractorName, docContractorId);
+        result = new DocEntity(id, docNumber, docType, docDate, docAcceptDate, docContractorName, docContractorId);
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
@@ -290,12 +288,11 @@ public class DbQueries {
             while(conn.result.next()){
                 id = conn.result.getInt("document_id");
                 docNumber = conn.result.getInt("document_number");
-                docYear = conn.result.getInt("document_year");
                 docType = conn.result.getInt("document_type");
                 docDate = tm.longToTimestamp(conn.result.getLong("document_date"));
                 docAcceptDate = tm.longToTimestamp(conn.result.getLong("document_accept_date"));
                 docContractorId = conn.result.getInt("document_contractor_id");
-                result = new DocEntity(id, docNumber, docYear, docType, docDate, docAcceptDate, docContractorName, docContractorId);
+                result = new DocEntity(id, docNumber, docType, docDate, docAcceptDate, docContractorName, docContractorId);
             }
         }
         catch(Exception e){
@@ -308,7 +305,7 @@ public class DbQueries {
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "insert into document_tab (document_type, document_date, document_accept_date, document_contractor_id, document_number, document_year) "
+                    "insert into document_tab (document_type, document_date, document_accept_date, document_contractor_id, document_number) "
                             + "values (?,?,?,?,?,?)"
         );
         conn.stmt.setInt(1, docType);

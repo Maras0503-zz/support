@@ -11,12 +11,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
 import static utilities.TimeFunctions.*;
+
 /**
  *
  * @author Marek
  */
 public class LoginPage extends javax.swing.JFrame {
+
     public static DbQueriesLogin conn = new DbQueriesLogin();
+
     /**
      * Creates new form Storage
      */
@@ -59,7 +62,12 @@ public class LoginPage extends javax.swing.JFrame {
 
         loginBox.setText("Maras0503");
 
-        passBox.setText("Maras0503");
+        passBox.setText("maras0502");
+        passBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passBoxActionPerformed(evt);
+            }
+        });
         passBox.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 passBoxKeyPressed(evt);
@@ -140,50 +148,44 @@ public class LoginPage extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         SetServer settings = new SetServer();
         settings.show();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        conn.userAns = conn.login(loginBox.getText(),passBox.getText());
-        if(conn.userAns.isLoginSucces()== true && conn.userAns.getId()!=0)
-        {
-            if(conn.checkTimePass(nowTimestamp(), conn.userAns.getId())){
+        conn.userAns = conn.login(loginBox.getText(), passBox.getText());
+        if (conn.userAns.isLoginSucces() == true && conn.userAns.getId() != 0) {
+            if (conn.checkTimePass(nowTimestamp(), conn.userAns.getId())) {
                 ChangePassword chPass = new ChangePassword();
                 chPass.show();
                 this.hide();
-            }else{
+            } else {
                 MainWindow main_window = new MainWindow();
                 main_window.show();
                 this.hide();
             }
-        }
-        else
-        {
+        } else {
             warningLabel.setText("Niepoprawne hasło lub login");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void passBoxKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passBoxKeyPressed
         int key = evt.getKeyCode();
-        if (key == KeyEvent.VK_ENTER){
-        conn.userAns = conn.login(loginBox.getText(),passBox.getText());
-        if(conn.userAns.isLoginSucces()== true && conn.userAns.getId()!=0)
-        {
-            if(conn.checkTimePass(nowTimestamp(), conn.userAns.getId())){
-                ChangePassword chPass = new ChangePassword();
-                chPass.show();
-                this.dispose();
-            }else{
-                MainWindow main_window = new MainWindow();
-                main_window.show();
-                this.dispose();
-            }
-        }
-            else
-            {
+        if (key == KeyEvent.VK_ENTER) {
+            conn.userAns = conn.login(loginBox.getText(), passBox.getText());
+            if (conn.userAns.isLoginSucces() == true && conn.userAns.getId() != 0) {
+                if (conn.checkTimePass(nowTimestamp(), conn.userAns.getId())) {
+                    ChangePassword chPass = new ChangePassword();
+                    chPass.show();
+                    this.dispose();
+                } else {
+                    MainWindow main_window = new MainWindow();
+                    main_window.show();
+                    this.dispose();
+                }
+            } else {
                 warningLabel.setText("Niepoprawne hasło lub login");
             }
         }
@@ -192,6 +194,10 @@ public class LoginPage extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void passBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passBoxActionPerformed
 
     /**
      * @param args the command line arguments
