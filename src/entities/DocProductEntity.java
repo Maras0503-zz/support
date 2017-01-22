@@ -12,17 +12,11 @@ package entities;
 public class DocProductEntity {
     int id;
     String name;
-    float price;
-    int vat;
-    String unit;
     float number;
 
-    public DocProductEntity(int id, String name, float price, int vat, String unit, float number) {
+    public DocProductEntity(int id, String name, float number) {
         this.id = id;
         this.name = name;
-        this.price = price;
-        this.vat = vat;
-        this.unit = unit;
         this.number = number;
     }
 
@@ -40,30 +34,6 @@ public class DocProductEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public int getVat() {
-        return vat;
-    }
-
-    public void setVat(int vat) {
-        this.vat = vat;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
     }
 
     public float getNumber() {

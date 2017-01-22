@@ -2,12 +2,7 @@
 package windows;
 
 import db.DbQueries;
-import entities.groupEntity;
-import entities.unitEntity;
-import entities.vatEntity;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.BorderFactory;
 
 
@@ -28,26 +23,6 @@ public class addProduct extends javax.swing.JFrame {
     public addProduct() {
         getRootPane().setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.GRAY));
         initComponents();
-        List<groupEntity> groupList = new ArrayList<>();
-        groupList = db.getGroups();
-        groupsCombo.addItem("brak");
-        for(groupEntity group : groupList){
-           groupsCombo.addItem(group.getName());
-        }
-        
-        List<vatEntity> vatList = new ArrayList<>();
-        vatList = db.getVat();
-        vatCombo.addItem("brak");
-        for(vatEntity vat : vatList){
-           vatCombo.addItem(vat.getValue()+"");
-        }
-        
-        List<unitEntity> unitList = new ArrayList<>();
-        unitList = db.getUnits();
-        unitCombo.addItem("brak");
-        for(unitEntity unit : unitList){
-           unitCombo.addItem(unit.getName());
-        }
     }
 
 
@@ -57,23 +32,8 @@ public class addProduct extends javax.swing.JFrame {
 
         nameBox = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        choseProducer = new javax.swing.JButton();
-        selectedContractorNameLabel = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        priceBox = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        groupsCombo = new javax.swing.JComboBox<>();
-        jLabel6 = new javax.swing.JLabel();
-        vatCombo = new javax.swing.JComboBox<>();
-        jLabel7 = new javax.swing.JLabel();
-        codeBox = new javax.swing.JTextField();
         addAndClose = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        selectedContractorIdLabel = new javax.swing.JLabel();
         add = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        unitCombo = new javax.swing.JComboBox<>();
         communicatLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         window = new javax.swing.JMenu();
@@ -87,44 +47,6 @@ public class addProduct extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("NAZWA:");
 
-        choseProducer.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        choseProducer.setText("WYBIERZ PRODUCENTA");
-        choseProducer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                choseProducerActionPerformed(evt);
-            }
-        });
-
-        selectedContractorNameLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        selectedContractorNameLabel.setText("NIE WYBRANO PRODUCENTA");
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setText("WYBRANY:");
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText("CENA NETTO:");
-
-        priceBox.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("GRUPA PRODUKTOWA:");
-
-        groupsCombo.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-
-        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel6.setText("STAWKA VAT:");
-
-        vatCombo.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-
-        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel7.setText("KOD KRESKOWY:");
-
-        codeBox.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-
         addAndClose.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         addAndClose.setText("DODAJ I ZAMKNIJ");
         addAndClose.addActionListener(new java.awt.event.ActionListener() {
@@ -132,12 +54,6 @@ public class addProduct extends javax.swing.JFrame {
                 addAndCloseActionPerformed(evt);
             }
         });
-
-        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel8.setText("ID:");
-
-        selectedContractorIdLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        selectedContractorIdLabel.setText("--");
 
         add.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         add.setText("DODAJ");
@@ -147,15 +63,7 @@ public class addProduct extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("JEDNOSTKA:");
-
-        unitCombo.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-
-        communicatLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         communicatLabel.setForeground(new java.awt.Color(255, 0, 0));
-        communicatLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         window.setText("Okno");
 
@@ -179,41 +87,16 @@ public class addProduct extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(communicatLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(nameBox))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(add)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(addAndClose, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(communicatLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(add)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(priceBox)
-                            .addComponent(groupsCombo, 0, 306, Short.MAX_VALUE)
-                            .addComponent(vatCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(codeBox)
-                            .addComponent(unitCombo, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(choseProducer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(selectedContractorIdLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(selectedContractorNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(addAndClose, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -224,46 +107,11 @@ public class addProduct extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(nameBox, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(choseProducer)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(selectedContractorNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(selectedContractorIdLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(priceBox)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(groupsCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(vatCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(unitCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(codeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(communicatLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(81, 81, 81))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(addAndClose, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addAndClose, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(communicatLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -279,14 +127,6 @@ public class addProduct extends javax.swing.JFrame {
         }
         this.hide();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void choseProducerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choseProducerActionPerformed
-        ContractorChoice cont = new ContractorChoice();
-        cont.parentFrameAddProduct = this;
-        cont.parentFrameId = 2;
-        cont.show();
-        this.disable();
-    }//GEN-LAST:event_choseProducerActionPerformed
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         String alertText = "<html><center>";
@@ -312,69 +152,14 @@ public class addProduct extends javax.swing.JFrame {
             colonNeeded++;
             errorsCounter++;
         }
-        //Sprawdzenie czy potrzebny przecinek
-        if(colonNeeded == 1){
-            alertText+=", ";
-            colonNeeded--;
-        }
-
         
-        //checks whether the group is selected
-        if(groupsCombo.getSelectedItem().toString().equals("brak")){
-            alertText += "nie wybrano grupy";
-            colonNeeded++;
-            errorsCounter++;
-        }
-        //Sprawdzenie czy potrzebny przecinek
-        if(colonNeeded == 1){
-            alertText+=", ";
-            colonNeeded--;
-        }
-        
-        //checks whether the vat is selected
-        if(vatCombo.getSelectedItem().toString().equals("brak")){
-            alertText += "nie wybrano stawki vat";
-            colonNeeded++;
-            errorsCounter++;
-        }
-        //Sprawdzenie czy potrzebny przecinek
-        if(colonNeeded == 1){
-            alertText+=", ";
-            colonNeeded--;
-        }
-        
-        //checks whether the unit is selected
-        if(unitCombo.getSelectedItem().toString().equals("brak")){
-            alertText += "nie wybrano jednostki";
-            colonNeeded++;
-            errorsCounter++;
-        }
-        //Sprawdzenie czy potrzebny przecinek
-        if(colonNeeded == 1){
-            alertText+=", ";
-            colonNeeded--;
-        }
-        
-        //checks whether the producer is selected
-        if(selectedContractorIdLabel.getText().equals("--")){
-            alertText += "nie wybrano producenta";
-            colonNeeded++;
-            errorsCounter++;
-        }    
       
-       if (errorsCounter == 0){ 
-            db.addProduct(nameBox.getText().toUpperCase(), Integer.valueOf(selectedContractorIdLabel.getText()), Float.valueOf(priceBox.getText()), groupsCombo.getSelectedItem().toString(), Integer.valueOf(vatCombo.getSelectedItem().toString()), codeBox.getText(), unitCombo.getSelectedItem().toString());
+        if (errorsCounter == 0){ 
+            db.addProduct(nameBox.getText().toUpperCase());
+            nameBox.setText("");
+            communicatLabel.setText("");
             if(parentFrameId == 1){
                 parentFrameProductWindow.drawTable(parentFrameProductWindow.wz.getProducts());
-                nameBox.setText("");
-                selectedContractorIdLabel.setText("--");
-                selectedContractorNameLabel.setText("NIE WYBRANO PRODUCENTA");
-                priceBox.setText("");
-                vatCombo.setSelectedIndex(1);
-                groupsCombo.setSelectedIndex(1);
-                unitCombo.setSelectedIndex(1);
-                codeBox.setText("");
-                communicatLabel.setText("");
                 parentFrameProductWindow.productTable.changeSelection(parentFrameProductWindow.productTable.getRowCount()-1, 1, false , false);
             }
        }else{
@@ -384,7 +169,6 @@ public class addProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_addActionPerformed
 
     private void addAndCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAndCloseActionPerformed
-        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         String alertText = "<html><center>";
         int colonNeeded = 0;
         int errorsCounter = 0;
@@ -408,60 +192,10 @@ public class addProduct extends javax.swing.JFrame {
             colonNeeded++;
             errorsCounter++;
         }
-        //Sprawdzenie czy potrzebny przecinek
-        if(colonNeeded == 1){
-            alertText+=", ";
-            colonNeeded--;
-        }
-
-        
-        //checks whether the group is selected
-        if(groupsCombo.getSelectedItem().toString().equals("brak")){
-            alertText += "nie wybrano grupy";
-            colonNeeded++;
-            errorsCounter++;
-        }
-        //Sprawdzenie czy potrzebny przecinek
-        if(colonNeeded == 1){
-            alertText+=", ";
-            colonNeeded--;
-        }
-        
-        //checks whether the vat is selected
-        if(vatCombo.getSelectedItem().toString().equals("brak")){
-            alertText += "nie wybrano stawki vat";
-            colonNeeded++;
-            errorsCounter++;
-        }
-        //Sprawdzenie czy potrzebny przecinek
-        if(colonNeeded == 1){
-            alertText+=", ";
-            colonNeeded--;
-        }
-        
-        //checks whether the unit is selected
-        if(unitCombo.getSelectedItem().toString().equals("brak")){
-            alertText += "nie wybrano jednostki";
-            colonNeeded++;
-            errorsCounter++;
-        }
-        //Sprawdzenie czy potrzebny przecinek
-        if(colonNeeded == 1){
-            alertText+=", ";
-            colonNeeded--;
-        }
-        //checks whether the producer is selected
-        if(selectedContractorIdLabel.getText().equals("--")){
-            alertText += "nie wybrano producenta";
-            colonNeeded++;
-            errorsCounter++;
-        }
-        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        
         
        
        if (errorsCounter == 0){ 
-            db.addProduct(nameBox.getText().toUpperCase(), Integer.valueOf(selectedContractorIdLabel.getText()), Float.valueOf(priceBox.getText()), groupsCombo.getSelectedItem().toString(), Integer.valueOf(vatCombo.getSelectedItem().toString()), codeBox.getText(), unitCombo.getSelectedItem().toString());
+            db.addProduct(nameBox.getText().toUpperCase());
             if(parentFrameId == 1){
                 parentFrameProductWindow.enable();
                 parentFrameProductWindow.drawTable(parentFrameProductWindow.wz.getProducts());
@@ -514,26 +248,11 @@ public class addProduct extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add;
     private javax.swing.JButton addAndClose;
-    private javax.swing.JButton choseProducer;
-    private javax.swing.JTextField codeBox;
     private javax.swing.JLabel communicatLabel;
-    private javax.swing.JComboBox<String> groupsCombo;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JTextField nameBox;
-    private javax.swing.JTextField priceBox;
-    public javax.swing.JLabel selectedContractorIdLabel;
-    public javax.swing.JLabel selectedContractorNameLabel;
-    private javax.swing.JComboBox<String> unitCombo;
-    private javax.swing.JComboBox<String> vatCombo;
     private javax.swing.JMenu window;
     // End of variables declaration//GEN-END:variables
 }

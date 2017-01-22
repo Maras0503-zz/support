@@ -182,8 +182,6 @@ public class ContractorChoice extends javax.swing.JFrame {
         if(parentFrameId == 2){
             parentFrameAddProduct.selectedContractorId = (int) ContractorTable.getValueAt(ContractorTable.getSelectedRow(),0);
             parentFrameAddProduct.selectedContractorName = ContractorTable.getValueAt(ContractorTable.getSelectedRow(),1).toString();
-            parentFrameAddProduct.selectedContractorIdLabel.setText(parentFrameAddProduct.selectedContractorId+"");
-            parentFrameAddProduct.selectedContractorNameLabel.setText(parentFrameAddProduct.selectedContractorName);
             parentFrameAddProduct.enable(); 
             this.hide();    
         }

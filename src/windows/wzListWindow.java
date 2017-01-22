@@ -151,23 +151,9 @@ public class wzListWindow extends javax.swing.JFrame {
         DecimalFormat dc = new DecimalFormat("0.00");
         dtm.setRowCount(prodList.size());    
         for(int i = 0; i < prodList.size(); i++){
-                netto = prodList.get(i).getPrice();
-                vat = (float)prodList.get(i).getVat();
-                number = prodList.get(i).getNumber();
-                brutto = (float)(netto + (netto*(vat/100)));
-                sbrutto = (float)brutto*number;
-                sumBrutto += sbrutto;
-                snetto = (float)netto*number;
-                sumNetto += snetto;
                 productTable.getModel().setValueAt(prodList.get(i).getId(), i, 0);
                 productTable.getModel().setValueAt(prodList.get(i).getName(), i, 1);
-                productTable.getModel().setValueAt(prodList.get(i).getPrice(), i, 2);
-                productTable.getModel().setValueAt(dc.format(brutto), i, 3);
-                productTable.getModel().setValueAt(prodList.get(i).getUnit(), i, 4);
-                productTable.getModel().setValueAt(prodList.get(i).getVat(), i, 5);
                 productTable.getModel().setValueAt(prodList.get(i).getNumber(), i, 6);
-                productTable.getModel().setValueAt(dc.format(snetto), i, 7);
-                productTable.getModel().setValueAt(dc.format(sbrutto), i, 8);
         }  
         nettoLabel.setText(String.valueOf(dc.format(sumNetto)));
         bruttoLabel.setText(String.valueOf(dc.format(sumBrutto)));

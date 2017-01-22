@@ -10,8 +10,6 @@ import entities.DocEntity;
 import entities.DocProductEntity;
 import entities.ProductEntity;
 import entities.groupEntity;
-import entities.unitEntity;
-import entities.vatEntity;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -71,119 +69,21 @@ public class DbQueries {
     }
     
     //ADD PRODUCT
-    public void addProduct(String name, int producerId, float price, String group, int vat, String ean, String unit){
-        conn.connect();
-        int groupId=0;
-        int vatId=0;
-        int unitId=0;
-        
-        //----
-        try{
-            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT product_group_id FROM product_group_tab WHERE product_group_name=?"
-            );
-            conn.stmt.setString(1, group);
-            conn.result = conn.stmt.executeQuery();
-            conn.result.last();
-            groupId= conn.result.getInt("product_group_id");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        //----
-        try{
-            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT vat_id FROM vat_tab WHERE vat_value=?"
-            );
-            conn.stmt.setInt(1, vat);
-            conn.result = conn.stmt.executeQuery();
-            conn.result.last();
-            vatId= conn.result.getInt("vat_id");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        
-        //----
-        try{
-            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT product_unit_id FROM product_unit_tab WHERE product_unit_name=?"
-            );
-            conn.stmt.setString(1, unit);
-            conn.result = conn.stmt.executeQuery();
-            conn.result.last();
-            unitId= conn.result.getInt("product_unit_id");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+    public void addProduct(String description){
+        conn.connect();      
         
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "insert into product_tab (product_name, product_producer, product_number, product_price, product_vat, product_last_price, product_ean, product_group, product_status, product_unit) "
-                            + "values (?,?,0,?,?,0,?,?,1,?)"
+                    "insert into product_tab (product_description) "
+                            + "values (?)"
         );
-      conn.stmt.setString(1, name);
-      conn.stmt.setInt(2, producerId);
-      conn.stmt.setFloat(3, price);
-      conn.stmt.setInt(4, vatId);
-      conn.stmt.setString(5, ean);
-      conn.stmt.setInt(6, groupId);
-      conn.stmt.setInt(7, unitId);
-        
-        int rowInserted = conn.stmt.executeUpdate();
+        conn.stmt.setString(1, description); 
+        conn.stmt.executeUpdate();
         }
         catch(Exception e){
             e.printStackTrace();
         }
     } 
-    
-    //GET LIST OF VATS FROM DB
-    public List<vatEntity> getVat(){
-        List<vatEntity> ans = new ArrayList<>();
-        int id;
-        int value;
-        conn.connect();
-        try{
-            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT * FROM vat_tab"
-            );
-            conn.result = conn.stmt.executeQuery();
-            while(conn.result.next()){
-                id = conn.result.getInt("vat_id");
-                value = conn.result.getInt("vat_value");
-                ans.add(new vatEntity(id,value));
-            }
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-        }        
-        conn.disconnect();
-        return ans;
-    }
-    
-    //GET LIST OF UNITS FROM DB
-    public List<unitEntity> getUnits(){
-        List<unitEntity> ans = new ArrayList<>();
-        int id;
-        String name;
-        String nameShort;
-        conn.connect();
-        try{
-            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT * FROM product_unit_tab"
-            );
-            conn.result = conn.stmt.executeQuery();
-            while(conn.result.next()){
-                id = conn.result.getInt("product_unit_id");
-                name = conn.result.getString("product_unit_name");
-                nameShort = conn.result.getString("product_unit_short");
-                ans.add(new unitEntity(id, name, nameShort));
-            }
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-        }        
-        conn.disconnect();
-        return ans;
-    }    
     
     //LOOKING FOR CONTRACTOR
     
@@ -344,34 +244,29 @@ public class DbQueries {
     public List<ProductEntity> getProducts(){
         List<ProductEntity> resultList = new ArrayList<>();       
         
-        int id = 0, vat = 0;
-        String name = "", contractor = "", status = "", unit = "", group = "";
-        float number = 0, price = 0;
+        int id = 0;
+        String name = "", contractor = "", status = "", group = "";
+        float number = 0;
                 
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                "SELECT product_id, product_name, contractor_name, product_number, product_price, vat_value, product_status_name, product_group_name, product_unit_short FROM product_tab"
+                "SELECT product_id, product_description, contractor_name, product_number, product_status_name, product_group_name FROM product_tab"
                        +" join contractor_tab on product_tab.product_producer = contractor_tab.contractor_id"
-                       +" join vat_tab on product_tab.product_vat = vat_tab.vat_id"
                        +" join product_group_tab on product_tab.product_group = product_group_tab.product_group_id"
                        +" join product_status_tab on product_status_tab.product_status_id = product_tab.product_status"
-                       +" join product_unit_tab on product_tab.product_unit = product_unit_tab.product_unit_id order by product_id"
             );
        
             conn.result = conn.stmt.executeQuery();
                         
             while(conn.result.next()){
                 id = conn.result.getInt("product_id");
-                name = conn.result.getString("product_name");
+                name = conn.result.getString("product_description");
                 contractor = conn.result.getString("contractor_name");
                 number = conn.result.getFloat("product_number");
-                price = conn.result.getFloat("product_price");
-                vat = conn.result.getInt("vat_value");
                 status = conn.result.getString("product_status_name");
                 group = conn.result.getString("product_group_name");
-                unit = conn.result.getString("product_unit_short");
-                resultList.add(new ProductEntity(id, name, contractor, number, price, vat, group, status, unit));
+                resultList.add(new ProductEntity(id, name, contractor, number, group, status));
             }
         }
         catch(Exception e){
@@ -384,18 +279,13 @@ public class DbQueries {
     public List<DocProductEntity> getDocProducts(int docId){
         List<DocProductEntity> resultList = new ArrayList<>();
         int id = 0;
-        String name = "";
-        float price = 0;
-        int vat = 0;
-        String unit;
+        String description = "";
         float number;
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT product_id, product_name, product_price, vat_value, product_unit_short, document_rekords_product_number FROM document_rekords"
+                    "SELECT product_id, product_description, document_rekords_product_number FROM document_rekords"
                         +" inner join product_tab on product_tab.product_id = document_rekords.document_rekords_product_id"
-                        +" inner join product_unit_tab on product_unit_tab.product_unit_id = product_tab.product_unit"
-                        +" inner join vat_tab on vat_tab.vat_id = product_tab.product_vat"
                         +" where document_rekords_document_id=?"
             );
             conn.stmt.setInt(1, docId);
@@ -403,12 +293,9 @@ public class DbQueries {
                         
             while(conn.result.next()){
                 id = conn.result.getInt("product_id");
-                name = conn.result.getString("product_name");
-                price = conn.result.getFloat("product_price");
-                vat = conn.result.getInt("vat_value");
-                unit = conn.result.getString("product_unit_short");
+                description = conn.result.getString("product_description");
                 number = conn.result.getFloat("document_rekords_product_number");
-                resultList.add(new DocProductEntity(id, name, price, vat, unit, number));
+                resultList.add(new DocProductEntity(id, description, number));
             }
         }
         catch(Exception e){

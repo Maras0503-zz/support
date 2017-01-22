@@ -175,11 +175,8 @@ public class productsWindow extends javax.swing.JFrame {
               productTable.getModel().setValueAt(docList.get(i).getName(), i, 1);
               productTable.getModel().setValueAt(docList.get(i).getProducer(), i, 2);
               productTable.getModel().setValueAt(docList.get(i).getNumber(), i, 3);
-              productTable.getModel().setValueAt(docList.get(i).getPrice(), i, 4);
-              productTable.getModel().setValueAt(docList.get(i).getVat(), i, 5);
               productTable.getModel().setValueAt(docList.get(i).getGroup(), i, 6);
               productTable.getModel().setValueAt(docList.get(i).getStatus(), i, 7);
-              productTable.getModel().setValueAt(docList.get(i).getUnit(), i, 8);
         }  
         //INITIALIZE RIGHT RENDERER
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();

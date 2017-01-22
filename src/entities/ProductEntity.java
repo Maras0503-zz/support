@@ -14,22 +14,16 @@ public class ProductEntity {
     String name;
     String producer;
     float number;
-    float price;
-    int vat;
     String group;
     String status;
-    String unit;
 
-    public ProductEntity(int id, String name, String producer, float number, float price, int vat, String group, String status, String unit) {
+    public ProductEntity(int id, String name, String producer, float number, String group, String status) {
         this.id = id;
         this.name = name;
         this.producer = producer;
         this.number = number;
-        this.price = price;
-        this.vat = vat;
         this.group = group;
         this.status = status;
-        this.unit = unit;
     }
 
     
@@ -66,22 +60,6 @@ public class ProductEntity {
         this.number = number;
     }
 
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public int getVat() {
-        return vat;
-    }
-
-    public void setVat(int vat) {
-        this.vat = vat;
-    }
-
     public String getGroup() {
         return group;
     }
@@ -98,13 +76,4 @@ public class ProductEntity {
         this.status = status;
     }
 
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-    
-    
 }
