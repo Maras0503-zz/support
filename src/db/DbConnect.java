@@ -32,7 +32,7 @@ public class DbConnect {
     public void connect(){
       try {
         ip = fm.readIp();
-        DB_URL = "jdbc:mysql://"+ip+":3306/devlivec_storage";
+        DB_URL = "jdbc:mysql://"+ip+":3306/devlivec_support";
         Class.forName(JDBC_DRIVER);
         System.out.println("Opening connection...");
         connection = DriverManager.getConnection(DB_URL, USER, PASS);
