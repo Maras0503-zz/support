@@ -14,10 +14,10 @@ public class ProductsTableTemplate extends DefaultTableModel{
   
     @Override
     public int getColumnCount() {
-        return 9;
+        return 2;
     }
 
-    String headers[] = new String[] { "ID", "NAZWA", "PRODUCENT", "ILOŚĆ", "CENA", "VAT", "GRUPA", "STATUS", "JEDN." };
+    String headers[] = new String[] { "ID", "OPIS" };
        
     @Override
     public String getColumnName(int column) {

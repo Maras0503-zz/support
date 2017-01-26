@@ -64,47 +64,37 @@ public class wzListWindow extends javax.swing.JFrame {
         WZTable.setSize(getScreenWidth()-21, 300);
         WZTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         int WZTableWidth = WZTable.getWidth();
-        int temp = 0;
         WZTable.getColumnModel().getColumn(0).setPreferredWidth((int)round(WZTableWidth*0.05));
-        temp += (int)round(WZTableWidth*0.05);
         WZTable.getColumnModel().getColumn(1).setPreferredWidth((int)round(WZTableWidth*0.05));
-        temp += (int)round(WZTableWidth*0.05);
         WZTable.getColumnModel().getColumn(2).setPreferredWidth((int)round(WZTableWidth*0.05));
-        temp += (int)round(WZTableWidth*0.05);
-        WZTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(WZTableWidth*0.05));
-        temp += (int)round(WZTableWidth*0.05);
-        WZTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(WZTableWidth*0.15));
-        temp += (int)round(WZTableWidth*0.15);
-        WZTable.getColumnModel().getColumn(6).setPreferredWidth((int)round(WZTableWidth*0.15));
-        temp += (int)round(WZTableWidth*0.15);
-        WZTable.getColumnModel().getColumn(4).setPreferredWidth(WZTableWidth-temp);
+        WZTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(WZTableWidth*0.20));
+        WZTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(WZTableWidth*0.10));
+        WZTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(WZTableWidth*0.10));
+        WZTable.getColumnModel().getColumn(6).setPreferredWidth((int)round(WZTableWidth*0.10));
+        WZTable.getColumnModel().getColumn(7).setPreferredWidth((int)round(WZTableWidth*0.05));
+        WZTable.getColumnModel().getColumn(8).setPreferredWidth((int)round(WZTableWidth*0.10));
+        WZTable.getColumnModel().getColumn(9).setPreferredWidth((int)round(WZTableWidth*0.05));
+        WZTable.getColumnModel().getColumn(10).setPreferredWidth((int)round(WZTableWidth*0.05));
+        WZTable.getColumnModel().getColumn(11).setPreferredWidth((int)round(WZTableWidth*0.10));
         
         //INPUT DATA INTO TABLE
         dtm.setRowCount(docList.size());    
         for(int i = 0; i < docList.size(); i++){
               WZTable.getModel().setValueAt(docList.get(i).getId(), i, 0);
               WZTable.getModel().setValueAt(docList.get(i).getDocNumber(), i, 1);
-              WZTable.getModel().setValueAt(docList.get(i).getDocContractorId(), i, 3);
-              WZTable.getModel().setValueAt(docList.get(i).getDocContractorName(), i, 4);
-              WZTable.getModel().setValueAt(docList.get(i).getDocDate(), i, 5);
-              AccTime = timestampToLong(docList.get(i).getDocAcceptDate());
-              if(AccTime.intValue() != 0){
-                    WZTable.getModel().setValueAt(docList.get(i).getDocAcceptDate(), i, 6);
-              }else{
-                    WZTable.getModel().setValueAt("dokument niepotwierdzony", i, 6);
-              }
+              WZTable.getModel().setValueAt(docList.get(i).getDocContractorId(), i, 2);
+              WZTable.getModel().setValueAt(docList.get(i).getDocContractorName(), i, 3);
+              WZTable.getModel().setValueAt(docList.get(i).getDocLeavingDate(), i, 4);
+              WZTable.getModel().setValueAt(docList.get(i).getDocRepairDate(), i, 5);
+              WZTable.getModel().setValueAt(docList.get(i).getDocReceiptDate(), i, 6);
+              WZTable.getModel().setValueAt(docList.get(i).getDocFvatNumber(), i, 7);
+              WZTable.getModel().setValueAt(docList.get(i).getDocFvatDate(), i, 8);
+              WZTable.getModel().setValueAt(docList.get(i).getDocSesin(), i, 9);
+              WZTable.getModel().setValueAt(docList.get(i).getDocOpti(), i, 10);
+              WZTable.getModel().setValueAt(docList.get(i).getDocStatus(), i, 11);
         }  
-
     }
     private void drawProductTable(List<DocProductEntity> prodList){
-        float sumNetto = 0;
-        float sumBrutto = 0;
-        float netto;
-        float vat;
-        float number;
-        float brutto;
-        float sbrutto;
-        float snetto;
         ProductOnDocumentTableTemplate dtm = new ProductOnDocumentTableTemplate();
         productTable.setModel(dtm);
         
@@ -115,37 +105,21 @@ public class wzListWindow extends javax.swing.JFrame {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER); 
 
-        //SET SIZE OF TABLE 6PX LESS THAN SCREEN RESOLUTION
-        productTable.setSize(getScreenWidth()-21, 330);
+
+        productTable.setSize(getScreenWidth()-21, 300);
         productTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        int ProdTabWidth = productTable.getWidth();
-        int temp = 0;
-        productTable.getColumnModel().getColumn(0).setPreferredWidth((int)round(ProdTabWidth*0.05));
-        temp += (int)round(ProdTabWidth*0.05);
-        productTable.getColumnModel().getColumn(2).setPreferredWidth((int)round(ProdTabWidth*0.10));
-        temp += (int)round(ProdTabWidth*0.10);
-        productTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(ProdTabWidth*0.10));
-        temp += (int)round(ProdTabWidth*0.10);
-        productTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(ProdTabWidth*0.05));
-        temp += (int)round(ProdTabWidth*0.05);
-        productTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(ProdTabWidth*0.05));
-        temp += (int)round(ProdTabWidth*0.05);
-        productTable.getColumnModel().getColumn(6).setPreferredWidth((int)round(ProdTabWidth*0.10));
-        temp += (int)round(ProdTabWidth*0.10);
-        productTable.getColumnModel().getColumn(7).setPreferredWidth((int)round(ProdTabWidth*0.10));
-        temp += (int)round(ProdTabWidth*0.10);
-        productTable.getColumnModel().getColumn(8).setPreferredWidth((int)round(ProdTabWidth*0.10));
-        temp += (int)round(ProdTabWidth*0.10);
-        productTable.getColumnModel().getColumn(1).setPreferredWidth(ProdTabWidth-temp);
+        int prodTableWidth = productTable.getWidth();
+        
+        productTable.getColumnModel().getColumn(0).setPreferredWidth((int)round(prodTableWidth*0.05));
+        productTable.getColumnModel().getColumn(1).setPreferredWidth((int)round(prodTableWidth*0.10));
+        productTable.getColumnModel().getColumn(2).setPreferredWidth((int)round(prodTableWidth*0.10));
+        productTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(prodTableWidth*0.05));
+        productTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(prodTableWidth*0.35));
+        productTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(prodTableWidth*0.35));
         //CHANGE COLUMN ALIGMENT
-        productTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-        productTable.getColumnModel().getColumn(6).setCellRenderer(rightRenderer);
         productTable.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
-        productTable.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
-        productTable.getColumnModel().getColumn(7).setCellRenderer(rightRenderer);
-        productTable.getColumnModel().getColumn(8).setCellRenderer(rightRenderer);
-        productTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-        productTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+
+
         
         
         DecimalFormat dc = new DecimalFormat("0.00");
@@ -153,10 +127,10 @@ public class wzListWindow extends javax.swing.JFrame {
         for(int i = 0; i < prodList.size(); i++){
                 productTable.getModel().setValueAt(prodList.get(i).getId(), i, 0);
                 productTable.getModel().setValueAt(prodList.get(i).getName(), i, 1);
-                productTable.getModel().setValueAt(prodList.get(i).getNumber(), i, 6);
+                productTable.getModel().setValueAt(prodList.get(i).getProblem(), i, 3);
+                productTable.getModel().setValueAt(prodList.get(i).getRepair(), i, 4);
+                productTable.getModel().setValueAt(prodList.get(i).getPrice(), i, 5);
         }  
-        nettoLabel.setText(String.valueOf(dc.format(sumNetto)));
-        bruttoLabel.setText(String.valueOf(dc.format(sumBrutto)));
     }
 
     @SuppressWarnings("unchecked")
@@ -187,14 +161,14 @@ public class wzListWindow extends javax.swing.JFrame {
 
         WZTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "NUMER", "ROK", "ID KLIENTA", "KLIENT", "DATA", "DATA POTWIERDZENIA"
+                "ID", "NUMER", "ID KLIENTA", "KLIENT", "PRZYJĘTO", "NAPRAWIONO", "WYDANO", "NR FVAT", "DATA FVAT", "SESIN", "OPTI", "STATUS"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -202,9 +176,6 @@ public class wzListWindow extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(WZTable);
-        if (WZTable.getColumnModel().getColumnCount() > 0) {
-            WZTable.getColumnModel().getColumn(4).setResizable(false);
-        }
 
         delWZBtt.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         delWZBtt.setText("-");
@@ -230,10 +201,10 @@ public class wzListWindow extends javax.swing.JFrame {
 
         productTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "NAZWA", "CENA NETTO", "CENA BRUTTO", "JEDNOSTKA", "STAWKA VAT", "ILOŚĆ", "SUMA NETTO", "SUMA BRUTTO"
+                "ID", "NAZWA", "NR SERYJNY", "KOSZT", "PROBLEM", "NAPRAWY"
             }
         ));
         jScrollPane2.setViewportView(productTable);

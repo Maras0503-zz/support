@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Timestamp;
-import utilities.TimeFunctions;
+import static utilities.TimeFunctions.longToTimestamp;
 
 /**
  *
@@ -23,7 +23,6 @@ import utilities.TimeFunctions;
  */
 public class DbQueries {
     public DbConnect conn = new DbConnect();
-    public TimeFunctions tm = new TimeFunctions();
     
     //WITHDRAW PRODUCT
     
@@ -123,46 +122,75 @@ public class DbQueries {
     //GET DOCUMENT LIST
     public List<DocEntity> getWZDocs(){
         List<DocEntity> resultList = new ArrayList<>();
-        int id, docNumber, docYear, docType, docContractorId;
-        Timestamp docDate, docAcceptDate;
+        int id;
+        int docNumber;
+        int docType;
+        Timestamp docLeavingDate;
+        Timestamp docRepairDate;
+        Timestamp docReceiptDate;
+        int docContractorId;
         String docContractorName;
+        String docFvatNumber;
+        Timestamp docFvatDate;
+        int docSesin;
+        int docOpti;
+        String docStatus;
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT document_id, document_date, document_accept_date, document_number, document_type"
-                            + ", document_contractor_id, contractor_name FROM document_tab"
+                    "SELECT document_id, document_type, document_number, document_leaving_date, document_repair_date, document_receipt_date, document_contractor_id, contractor_name, document_fvat_number, document_fvat_date, document_sesin, document_opti, status_name"
+                            + " FROM document_tab"
                             + " inner join contractor_tab on document_tab.document_contractor_id=contractor_tab.contractor_id"
+                            + " inner join status_tab on document_tab.document_status = status_tab.status_id"
                             + " where document_type=1 and document_number = 0 order by document_id desc"
             );
+ 
             conn.result = conn.stmt.executeQuery();
                         
             while(conn.result.next()){
+                
                 id = conn.result.getInt("document_id");
                 docNumber = conn.result.getInt("document_number");
                 docType = conn.result.getInt("document_type");
-                docDate = tm.longToTimestamp(conn.result.getLong("document_date"));
-                docAcceptDate = tm.longToTimestamp(conn.result.getLong("document_accept_date"));
-                docContractorName = conn.result.getString("contractor_name");
+                docLeavingDate = longToTimestamp(conn.result.getLong("document_leaving_date"));
+                docRepairDate = longToTimestamp(conn.result.getLong("document_repair_date"));
+                docReceiptDate = longToTimestamp(conn.result.getLong("document_receipt_date"));
                 docContractorId = conn.result.getInt("document_contractor_id");
-                resultList.add(new DocEntity(id, docNumber, docType, docDate, docAcceptDate, docContractorName, docContractorId));
+                docContractorName = conn.result.getString("contractor_name");
+                docFvatNumber = conn.result.getString("document_fvat_number");
+                docFvatDate = longToTimestamp(conn.result.getLong("document_fvat_date"));
+                docSesin = conn.result.getInt("document_sesin");
+                docOpti = conn.result.getInt("document_opti");
+                docStatus = conn.result.getString("status_name");
+                
+                resultList.add(new DocEntity(id, docNumber, docType, docLeavingDate, docRepairDate, docReceiptDate, docContractorId, docContractorName, docFvatNumber, docFvatDate, docSesin, docOpti, docStatus));
             }
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT document_id, document_date, document_accept_date, document_number, document_type"
-                            + ", document_contractor_id, contractor_name FROM document_tab"
+                    "SELECT document_id, document_type, document_number, document_leaving_date, document_repair_date, document_receipt_date, document_contractor_id, contractor_name, document_fvat_number, document_fvat_date, document_sesin, document_opti, status_name"
+                            + " FROM document_tab"
                             + " inner join contractor_tab on document_tab.document_contractor_id=contractor_tab.contractor_id"
+                            + " inner join status_tab on document_tab.document_status = status_tab.status_id"
                             + " where document_type=1 and document_number <> 0 order by document_number desc limit 30"
             );
             conn.result = conn.stmt.executeQuery();
                         
             while(conn.result.next()){
+                
                 id = conn.result.getInt("document_id");
                 docNumber = conn.result.getInt("document_number");
                 docType = conn.result.getInt("document_type");
-                docDate = tm.longToTimestamp(conn.result.getLong("document_date"));
-                docAcceptDate = tm.longToTimestamp(conn.result.getLong("document_accept_date"));
-                docContractorName = conn.result.getString("contractor_name");
+                docLeavingDate = longToTimestamp(conn.result.getLong("document_leaving_date"));
+                docRepairDate = longToTimestamp(conn.result.getLong("document_repair_date"));
+                docReceiptDate = longToTimestamp(conn.result.getLong("document_receipt_date"));
                 docContractorId = conn.result.getInt("document_contractor_id");
-                resultList.add(new DocEntity(id, docNumber, docType, docDate, docAcceptDate, docContractorName, docContractorId));
+                docContractorName = conn.result.getString("contractor_name");
+                docFvatNumber = conn.result.getString("document_fvat_number");
+                docFvatDate = longToTimestamp(conn.result.getLong("document_fvat_date"));
+                docSesin = conn.result.getInt("document_sesin");
+                docOpti = conn.result.getInt("document_opti");
+                docStatus = conn.result.getString("status_name");
+                
+                resultList.add(new DocEntity(id, docNumber, docType, docLeavingDate, docRepairDate, docReceiptDate, docContractorId, docContractorName, docFvatNumber, docFvatDate, docSesin, docOpti, docStatus));
             }
         }
         catch(SQLException e){
@@ -174,11 +202,22 @@ public class DbQueries {
     
     //POBIERZ OSTATNI DOKUMENT WZ
     public DocEntity getLastWZ(){
-        int id = 0, docNumber = 0, docYear = 0, docType = 0, docContractorId = 0;
-        Timestamp docDate = Timestamp.valueOf("1970-01-01 00:00:00.0"), docAcceptDate = Timestamp.valueOf("1970-01-01 00:00:00.0");
-        String docContractorName = "";
-        DocEntity result;
-        result = new DocEntity(id, docNumber, docType, docDate, docAcceptDate, docContractorName, docContractorId);
+        int id;
+        int docNumber;
+        int docType;
+        Timestamp docLeavingDate;
+        Timestamp docRepairDate;
+        Timestamp docReceiptDate;
+        int docContractorId;
+        String docContractorName;
+        String docFvatNumber;
+        Timestamp docFvatDate;
+        int docSesin;
+        int docOpti;
+        String docStatus;
+
+        DocEntity result = new DocEntity();
+        
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
@@ -189,10 +228,17 @@ public class DbQueries {
                 id = conn.result.getInt("document_id");
                 docNumber = conn.result.getInt("document_number");
                 docType = conn.result.getInt("document_type");
-                docDate = tm.longToTimestamp(conn.result.getLong("document_date"));
-                docAcceptDate = tm.longToTimestamp(conn.result.getLong("document_accept_date"));
+                docLeavingDate = longToTimestamp(conn.result.getLong("document_leaving_date"));
+                docRepairDate = longToTimestamp(conn.result.getLong("document_repair_date"));
+                docReceiptDate = longToTimestamp(conn.result.getLong("document_receipt_date"));
                 docContractorId = conn.result.getInt("document_contractor_id");
-                result = new DocEntity(id, docNumber, docType, docDate, docAcceptDate, docContractorName, docContractorId);
+                docContractorName = conn.result.getString("contractor_name");
+                docFvatNumber = conn.result.getString("document_fvat_number");
+                docFvatDate = longToTimestamp(conn.result.getLong("document_fvat_date"));
+                docSesin = conn.result.getInt("document_sesin");
+                docOpti = conn.result.getInt("document_opti");
+                docStatus = conn.result.getString("status_name");
+                result = new DocEntity(id, docNumber, docType, docLeavingDate, docRepairDate, docReceiptDate, docContractorId, docContractorName, docFvatNumber, docFvatDate, docSesin, docOpti, docStatus);
             }
         }
         catch(Exception e){
@@ -245,28 +291,20 @@ public class DbQueries {
         List<ProductEntity> resultList = new ArrayList<>();       
         
         int id = 0;
-        String name = "", contractor = "", status = "", group = "";
-        float number = 0;
+        String description = "";
                 
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                "SELECT product_id, product_description, contractor_name, product_number, product_status_name, product_group_name FROM product_tab"
-                       +" join contractor_tab on product_tab.product_producer = contractor_tab.contractor_id"
-                       +" join product_group_tab on product_tab.product_group = product_group_tab.product_group_id"
-                       +" join product_status_tab on product_status_tab.product_status_id = product_tab.product_status"
+                "SELECT product_id, product_description FROM product_tab"
             );
        
             conn.result = conn.stmt.executeQuery();
                         
             while(conn.result.next()){
                 id = conn.result.getInt("product_id");
-                name = conn.result.getString("product_description");
-                contractor = conn.result.getString("contractor_name");
-                number = conn.result.getFloat("product_number");
-                status = conn.result.getString("product_status_name");
-                group = conn.result.getString("product_group_name");
-                resultList.add(new ProductEntity(id, name, contractor, number, group, status));
+                description = conn.result.getString("product_description");
+                resultList.add(new ProductEntity(id, description));
             }
         }
         catch(Exception e){
@@ -280,12 +318,17 @@ public class DbQueries {
         List<DocProductEntity> resultList = new ArrayList<>();
         int id = 0;
         String description = "";
-        float number;
+        float price;
+        String problem = "";
+        String repair = "";
+        String serial = "";
+        String place = "";
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT product_id, product_description, document_rekords_product_number FROM document_rekords"
+                    "SELECT product_id, product_description, document_records_serial, document_records_price, document_records_problem, document_records_repair, repair_place_name FROM document_rekords"
                         +" inner join product_tab on product_tab.product_id = document_rekords.document_rekords_product_id"
+                        +" inner join repair_place_tab on repair_place_tab.repair_place_id = document_rekords.document_rekords_repair_place"
                         +" where document_rekords_document_id=?"
             );
             conn.stmt.setInt(1, docId);
@@ -294,8 +337,11 @@ public class DbQueries {
             while(conn.result.next()){
                 id = conn.result.getInt("product_id");
                 description = conn.result.getString("product_description");
-                number = conn.result.getFloat("document_rekords_product_number");
-                resultList.add(new DocProductEntity(id, description, number));
+                serial = conn.result.getString("document_records_serial");
+                price = conn.result.getFloat("document_rekords_product_number");
+                problem = conn.result.getString("document_records_problem");
+                repair = conn.result.getString("document_records_repair");
+                resultList.add(new DocProductEntity(id, description, serial, price, problem, repair, place));
             }
         }
         catch(Exception e){

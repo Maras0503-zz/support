@@ -14,10 +14,10 @@ public class ProductOnDocumentTableTemplate extends DefaultTableModel{
   
     @Override
     public int getColumnCount() {
-        return 9;
+        return 6;
     }
 
-    String headers[] = new String[] { "ID", "NAZWA", "NETTO", "BRUTTO", "JEDN.", "VAT", "ILOŚĆ", "SUMA NETTO", "SUMA BRUTTO" };
+    String headers[] = new String[] {"ID", "NAZWA", "NR SERYJNY", "KOSZT", "PROBLEM", "NAPRAWY"};
        
     @Override
     public String getColumnName(int column) {

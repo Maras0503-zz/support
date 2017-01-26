@@ -2,17 +2,12 @@ package windows;
 
 import db.DbQueries;
 import entities.ProductEntity;
+import java.awt.Color;
 import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import tableTemplates.ProductsTableTemplate;
-import static utilities.Other.getScreenWidth;
-import static java.lang.Math.round;
-import static java.lang.Math.round;
-import static java.lang.Math.round;
-import static java.lang.Math.round;
+import javax.swing.BorderFactory;
 
 /**
  *
@@ -24,15 +19,9 @@ public class productsWindow extends javax.swing.JFrame {
     MainWindow parentFrame;
     public productsWindow() {
         initComponents();
-        this.setExtendedState( this.getExtendedState()|JFrame.MAXIMIZED_BOTH );
+        getRootPane().setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.GRAY));
         toShow = wz.getProducts();
         drawTable(toShow);
-        if(LoginPage.conn.userAns.getType()==1){
-            adminMenu.show();
-        }
-        else{
-            adminMenu.hide();
-        } 
     }
 
     @SuppressWarnings("unchecked")
@@ -44,22 +33,21 @@ public class productsWindow extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
-        adminMenu = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        withdrawUnwithdrawBtt = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
 
         productTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "ID", "NAZWA", "PRODUCENT", "ILOŚĆ", "CENA", "VAT", "GRUPA", "STATUS", "JEDN."
+                "ID", "OPIS"
             }
         ));
         jScrollPane1.setViewportView(productTable);
@@ -77,7 +65,7 @@ public class productsWindow extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
-        adminMenu.setText("Administrator");
+        jMenu1.setText("Produkty");
 
         jMenuItem2.setText("Dodaj produkt");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -85,17 +73,9 @@ public class productsWindow extends javax.swing.JFrame {
                 jMenuItem2ActionPerformed(evt);
             }
         });
-        adminMenu.add(jMenuItem2);
+        jMenu1.add(jMenuItem2);
 
-        withdrawUnwithdrawBtt.setText("Oznacz produkt jako wycofany/aktywny");
-        withdrawUnwithdrawBtt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                withdrawUnwithdrawBttActionPerformed(evt);
-            }
-        });
-        adminMenu.add(withdrawUnwithdrawBtt);
-
-        jMenuBar1.add(adminMenu);
+        jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
 
@@ -103,11 +83,11 @@ public class productsWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 617, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
         );
 
         pack();
@@ -127,56 +107,19 @@ public class productsWindow extends javax.swing.JFrame {
         this.disable();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    private void withdrawUnwithdrawBttActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_withdrawUnwithdrawBttActionPerformed
-        String status = productTable.getValueAt(productTable.getSelectedRow(),7).toString();
-        confirmWithdrawUnwithdrawProduct confirmWithdraw = new confirmWithdrawUnwithdrawProduct();
-        confirmWithdraw.prWind = this;
-        confirmWithdraw.productId = (int) productTable.getValueAt(productTable.getSelectedRow(),0);
-        confirmWithdraw.status = status;
-        confirmWithdraw.selectedId = productTable.getSelectedRow();
-        if(status.equalsIgnoreCase("AKTYWNY")){
-            confirmWithdraw.question.setText("Czy chcesz wycofać produkt?");
-        }else{
-            confirmWithdraw.question.setText("Czy chcesz przywrócić produkt?");
-        }
-        confirmWithdraw.show();
-        this.disable();
-    }//GEN-LAST:event_withdrawUnwithdrawBttActionPerformed
-
     public void drawTable(List<ProductEntity> docList){
         ProductsTableTemplate dtm = new ProductsTableTemplate();
         productTable.setModel(dtm);
         
         //SET SIZE OF TABLE 6PX LESS THAN SCREEN RESOLUTION
-        productTable.setSize(getScreenWidth()-29, 300);
-        productTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        int tableWidth = productTable.getWidth();
-        int temp = 0;
-        productTable.getColumnModel().getColumn(0).setPreferredWidth((int)round(tableWidth*0.05));
-        temp += (int)round(tableWidth*0.05);
-        productTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(tableWidth*0.1));
-        temp += (int)round(tableWidth*0.1);
-        productTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(tableWidth*0.1));
-        temp += (int)round(tableWidth*0.1);
-        productTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(tableWidth*0.05));
-        temp += (int)round(tableWidth*0.05);
-        productTable.getColumnModel().getColumn(6).setPreferredWidth((int)round(tableWidth*0.15));
-        temp += (int)round(tableWidth*0.15);
-        productTable.getColumnModel().getColumn(7).setPreferredWidth((int)round(tableWidth*0.05));
-        temp += (int)round(tableWidth*0.05);
-        productTable.getColumnModel().getColumn(7).setPreferredWidth((int)round(tableWidth*0.1));
-        temp += (int)round(tableWidth*0.1);
-        productTable.getColumnModel().getColumn(1).setPreferredWidth(round(tableWidth-temp)/2);
-        productTable.getColumnModel().getColumn(2).setPreferredWidth(round(tableWidth-temp)/2);
+        productTable.getColumnModel().getColumn(0).setPreferredWidth(40);
+        productTable.getColumnModel().getColumn(1).setPreferredWidth(260);
+
         //INPUT DATA INTO TABLE
         dtm.setRowCount(docList.size());    
         for(int i = 0; i < docList.size(); i++){
               productTable.getModel().setValueAt(docList.get(i).getId(), i, 0);
-              productTable.getModel().setValueAt(docList.get(i).getName(), i, 1);
-              productTable.getModel().setValueAt(docList.get(i).getProducer(), i, 2);
-              productTable.getModel().setValueAt(docList.get(i).getNumber(), i, 3);
-              productTable.getModel().setValueAt(docList.get(i).getGroup(), i, 6);
-              productTable.getModel().setValueAt(docList.get(i).getStatus(), i, 7);
+              productTable.getModel().setValueAt(docList.get(i).getDescription(), i, 1);
         }  
         //INITIALIZE RIGHT RENDERER
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
@@ -186,12 +129,6 @@ public class productsWindow extends javax.swing.JFrame {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER); 
         //CHANGE COLUMN ALIGMENT
         productTable.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
-        productTable.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
-        productTable.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
-        productTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
-        productTable.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
-        productTable.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);
-        productTable.getColumnModel().getColumn(8).setCellRenderer(centerRenderer);
     }
     
     /**
@@ -231,13 +168,12 @@ public class productsWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu adminMenu;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTable productTable;
-    private javax.swing.JMenuItem withdrawUnwithdrawBtt;
     // End of variables declaration//GEN-END:variables
 }

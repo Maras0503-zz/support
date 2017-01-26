@@ -12,22 +12,39 @@ import java.sql.Timestamp;
  */
 public class DocEntity {
     int id;
+    int docNumber;
+    int docType;
+    Timestamp docLeavingDate;
+    Timestamp docRepairDate;
+    Timestamp docReceiptDate;
+    int docContractorId;
+    String docContractorName;
+    String docFvatNumber;
+    Timestamp docFvatDate;
+    int docSesin;
+    int docOpti;
+    String docStatus;
 
-    public DocEntity(int id, int docNumber, int docType, Timestamp docDate, Timestamp docAcceptDate, String docContractorName, int docContractorId) {
+    public DocEntity() {
+    }
+
+    
+    
+    public DocEntity(int id, int docNumber, int docType, Timestamp docLeavingDate, Timestamp docRepairDate, Timestamp docReceiptDate, int docContractorId, String docContractorName, String docFvatNumber, Timestamp docFvatDate, int docSesin, int docOpti, String docStatus) {
         this.id = id;
         this.docNumber = docNumber;
         this.docType = docType;
-        this.docDate = docDate;
-        this.docAcceptDate = docAcceptDate;
-        this.docContractorName = docContractorName;
+        this.docLeavingDate = docLeavingDate;
+        this.docRepairDate = docRepairDate;
+        this.docReceiptDate = docReceiptDate;
         this.docContractorId = docContractorId;
+        this.docContractorName = docContractorName;
+        this.docFvatNumber = docFvatNumber;
+        this.docFvatDate = docFvatDate;
+        this.docSesin = docSesin;
+        this.docOpti = docOpti;
+        this.docStatus = docStatus;
     }
-    int docNumber;
-    int docType;
-    Timestamp docDate;
-    Timestamp docAcceptDate;
-    String docContractorName;
-    int docContractorId;
 
     public int getId() {
         return id;
@@ -35,14 +52,6 @@ public class DocEntity {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Timestamp getDocAcceptDate() {
-        return docAcceptDate;
-    }
-
-    public void setDocAcceptDate(Timestamp docAcceptDate) {
-        this.docAcceptDate = docAcceptDate;
     }
 
     public int getDocNumber() {
@@ -61,12 +70,36 @@ public class DocEntity {
         this.docType = docType;
     }
 
-    public Timestamp getDocDate() {
-        return docDate;
+    public Timestamp getDocLeavingDate() {
+        return docLeavingDate;
     }
 
-    public void setDocDate(Timestamp docDate) {
-        this.docDate = docDate;
+    public void setDocLeavingDate(Timestamp docLeavingDate) {
+        this.docLeavingDate = docLeavingDate;
+    }
+
+    public Timestamp getDocRepairDate() {
+        return docRepairDate;
+    }
+
+    public void setDocRepairDate(Timestamp docRepairDate) {
+        this.docRepairDate = docRepairDate;
+    }
+
+    public Timestamp getDocReceiptDate() {
+        return docReceiptDate;
+    }
+
+    public void setDocReceiptDate(Timestamp docReceiptDate) {
+        this.docReceiptDate = docReceiptDate;
+    }
+
+    public int getDocContractorId() {
+        return docContractorId;
+    }
+
+    public void setDocContractorId(int docContractorId) {
+        this.docContractorId = docContractorId;
     }
 
     public String getDocContractorName() {
@@ -77,12 +110,44 @@ public class DocEntity {
         this.docContractorName = docContractorName;
     }
 
-    public int getDocContractorId() {
-        return docContractorId;
+    public String getDocFvatNumber() {
+        return docFvatNumber;
     }
 
-    public void setDocContractorId(int docContractorId) {
-        this.docContractorId = docContractorId;
+    public void setDocFvatNumber(String docFvatNumber) {
+        this.docFvatNumber = docFvatNumber;
     }
-    
+
+    public Timestamp getDocFvatDate() {
+        return docFvatDate;
+    }
+
+    public void setDocFvatDate(Timestamp docFvatDate) {
+        this.docFvatDate = docFvatDate;
+    }
+
+    public int getDocSesin() {
+        return docSesin;
+    }
+
+    public void setDocSesin(int docSesin) {
+        this.docSesin = docSesin;
+    }
+
+    public int getDocOpti() {
+        return docOpti;
+    }
+
+    public void setDocOpti(int docOpti) {
+        this.docOpti = docOpti;
+    }
+
+    public String getDocStatus() {
+        return docStatus;
+    }
+
+    public void setDocStatus(String docStatus) {
+        this.docStatus = docStatus;
+    }
+        
 }
