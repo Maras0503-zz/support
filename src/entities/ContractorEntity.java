@@ -17,9 +17,8 @@ public class ContractorEntity {
     String city;
     String street;
     String country;
-    int provider;
     
-    public ContractorEntity(int id, String name, String nip, String postalCode, String city, String street, String country, int provider) {
+    public ContractorEntity(int id, String name, String nip, String postalCode, String city, String street, String country) {
         this.id = id;
         this.name = name;
         this.nip = nip;
@@ -27,7 +26,6 @@ public class ContractorEntity {
         this.city = city;
         this.street = street;
         this.country = country;
-        this.provider = provider;
     }
 
     public int getId() {

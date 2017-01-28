@@ -15,7 +15,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Timestamp;
+import utilities.TimeFunctions;
 import static utilities.TimeFunctions.longToTimestamp;
+import static utilities.TimeFunctions.nowTimestamp;
 
 /**
  *
@@ -109,8 +111,7 @@ public class DbQueries {
                 city = conn.result.getString("contractor_city");
                 street = conn.result.getString("contractor_street");
                 country = conn.result.getString("contractor_country");
-                provider = conn.result.getInt("contractor_provider");
-                resultList.add(new ContractorEntity(id, name, nip, postalCode, city, street, country, provider));
+                resultList.add(new ContractorEntity(id, name, nip, postalCode, city, street, country));
             }
         }
        catch(Exception e){
@@ -221,7 +222,10 @@ public class DbQueries {
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "select * from document_tab where document_type=1 order by document_id desc limit 1"
+                    "select *, contractor_name from document_tab"
+                            + " join contractor_tab on contractor_tab.contractor_id = document_tab.document_contractor_id"
+                            + " join status_tab on status_id = document_tab.document_status"
+                            + " where document_type=1 order by document_id desc limit 1"
             );
             conn.result = conn.stmt.executeQuery();
             while(conn.result.next()){
@@ -247,19 +251,26 @@ public class DbQueries {
         return result;
     }
     //ADD DOCUMENT
-    public void addDoc(int docType, long docDate, long docAcceptDate, int contractorId, int DocNumber, int docYear){
+    public void addDoc(int contractorId, int sesin, int opti){
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "insert into document_tab (document_type, document_date, document_accept_date, document_contractor_id, document_number) "
-                            + "values (?,?,?,?,?,?)"
+                    "insert into document_tab (document_type, document_leaving_date, document_repair_date, document_receipt_date, document_contractor_id, document_number, document_fvat_number, document_fvat_date, document_sesin, document_opti, document_status) "
+                            + "values (?,?,?,?,?,?,?,?,?,?,?)"
         );
-        conn.stmt.setInt(1, docType);
-        conn.stmt.setLong(2, docDate);
-        conn.stmt.setLong(3, docAcceptDate);
-        conn.stmt.setInt(4, contractorId);
-        conn.stmt.setInt(5, DocNumber);
-        conn.stmt.setInt(6, docYear);
+        conn.stmt.setInt(1, 1);
+        conn.stmt.setLong(2, nowTimestamp());
+        conn.stmt.setLong(3, 0);
+        conn.stmt.setLong(4, 0);
+        conn.stmt.setInt(5, contractorId);
+        conn.stmt.setInt(6, 0);
+        conn.stmt.setString(7, "");
+        conn.stmt.setLong(8, 0);
+        conn.stmt.setInt(9, sesin);
+        conn.stmt.setInt(10, opti);
+        conn.stmt.setInt(11, 1);
+        
+        
         
         int rowInserted = conn.stmt.executeUpdate();
         }
@@ -326,7 +337,7 @@ public class DbQueries {
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "SELECT product_id, product_description, document_records_serial, document_records_price, document_records_problem, document_records_repair, repair_place_name FROM document_rekords"
+                    "SELECT product_id, product_description, document_rekords_serial, document_rekords_price, document_rekords_problem, document_rekords_repairs, repair_place_name FROM document_rekords"
                         +" inner join product_tab on product_tab.product_id = document_rekords.document_rekords_product_id"
                         +" inner join repair_place_tab on repair_place_tab.repair_place_id = document_rekords.document_rekords_repair_place"
                         +" where document_rekords_document_id=?"
@@ -337,10 +348,10 @@ public class DbQueries {
             while(conn.result.next()){
                 id = conn.result.getInt("product_id");
                 description = conn.result.getString("product_description");
-                serial = conn.result.getString("document_records_serial");
-                price = conn.result.getFloat("document_rekords_product_number");
-                problem = conn.result.getString("document_records_problem");
-                repair = conn.result.getString("document_records_repair");
+                serial = conn.result.getString("document_rekords_serial");
+                price = conn.result.getFloat("document_rekords_price");
+                problem = conn.result.getString("document_rekords_problem");
+                repair = conn.result.getString("document_rekords_repairs");
                 resultList.add(new DocProductEntity(id, description, serial, price, problem, repair, place));
             }
         }

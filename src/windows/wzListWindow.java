@@ -8,12 +8,14 @@ package windows;
 import db.DbQueries;
 import entities.DocEntity;
 import entities.DocProductEntity;
+import java.awt.Color;
+import java.awt.Component;
 import static java.lang.Math.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import tableTemplates.ProductOnDocumentTableTemplate;
 import tableTemplates.wzTableTemplate;
-import static utilities.TimeFunctions.*;
 import java.text.DecimalFormat;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,7 +24,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import static utilities.Other.getScreenWidth;
+import utilities.TimeFunctions;
+import static utilities.TimeFunctions.timestampToLong;
+import static utilities.TimeFunctions.nowTimestamp;
+import utilities.myRenderer;
 
 /**
  *
@@ -32,13 +39,15 @@ public class wzListWindow extends javax.swing.JFrame {
     public MainWindow parentFrame;
     public int newWzContracorId;
     int selectedDocId;
+    float snetto = 0;
     int setNowModelCounter = 0;
-    Long AccTime;
+    Long tmpTime;
+    
     wzTableTemplate dtm = new wzTableTemplate();
     DbQueries wz = new DbQueries();
     public List<DocEntity> toShow = wz.getWZDocs();
     List<DocProductEntity> productToShow = new ArrayList<>();
-    public wzListWindow() {       
+    public wzListWindow() {
         initComponents();
         this.setExtendedState( this.getExtendedState()|JFrame.MAXIMIZED_BOTH);
         drawTable(toShow);
@@ -47,9 +56,16 @@ public class wzListWindow extends javax.swing.JFrame {
         ListSelectionModel selectionModel = WZTable.getSelectionModel();
         selectionModel.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
+                long test1 = timestampToLong(Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 5).toString().substring(0, 18)))-86400000;
+                if(nowTimestamp() > test1 && !"SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
+                    terminComm.setText("ZBLIŻA SIĘ TERMIN ODBIORU");
+                }
+                else{
+                    terminComm.setText("");
+                }
                 selectedDocId = Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString());
                 productToShow = wz.getDocProducts(selectedDocId);
-                contractorNameLabel.setText(WZTable.getValueAt(WZTable.getSelectedRow(),4).toString());
+                contractorNameLabel.setText(WZTable.getValueAt(WZTable.getSelectedRow(),3).toString());
                 drawProductTable(productToShow);
             }
         });
@@ -59,7 +75,7 @@ public class wzListWindow extends javax.swing.JFrame {
         WZTable.setModel(dtm);
         setNowModelCounter++;
         }
-       
+        WZTable.setDefaultRenderer(Object.class, new myRenderer());
         //SET SIZE OF TABLE 6PX LESS THAN SCREEN RESOLUTION
         WZTable.setSize(getScreenWidth()-21, 300);
         WZTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -86,9 +102,23 @@ public class wzListWindow extends javax.swing.JFrame {
               WZTable.getModel().setValueAt(docList.get(i).getDocContractorName(), i, 3);
               WZTable.getModel().setValueAt(docList.get(i).getDocLeavingDate(), i, 4);
               WZTable.getModel().setValueAt(docList.get(i).getDocRepairDate(), i, 5);
-              WZTable.getModel().setValueAt(docList.get(i).getDocReceiptDate(), i, 6);
+              tmpTime = timestampToLong(docList.get(i).getDocRepairDate())-86400000;
+              if(tmpTime<TimeFunctions.nowTimestamp()){
+                  
+              }
+              tmpTime = timestampToLong(docList.get(i).getDocReceiptDate());
+              if(tmpTime.intValue() != 0){
+                    WZTable.getModel().setValueAt(docList.get(i).getDocReceiptDate(), i, 6);
+              }else{
+                    WZTable.getModel().setValueAt("", i, 6);
+              }
               WZTable.getModel().setValueAt(docList.get(i).getDocFvatNumber(), i, 7);
-              WZTable.getModel().setValueAt(docList.get(i).getDocFvatDate(), i, 8);
+              tmpTime = timestampToLong(docList.get(i).getDocFvatDate());
+              if(tmpTime.intValue() != 0){
+                    WZTable.getModel().setValueAt(docList.get(i).getDocFvatDate(), i, 8);
+              }else{
+                    WZTable.getModel().setValueAt("", i, 8);
+              }
               WZTable.getModel().setValueAt(docList.get(i).getDocSesin(), i, 9);
               WZTable.getModel().setValueAt(docList.get(i).getDocOpti(), i, 10);
               WZTable.getModel().setValueAt(docList.get(i).getDocStatus(), i, 11);
@@ -113,11 +143,12 @@ public class wzListWindow extends javax.swing.JFrame {
         productTable.getColumnModel().getColumn(0).setPreferredWidth((int)round(prodTableWidth*0.05));
         productTable.getColumnModel().getColumn(1).setPreferredWidth((int)round(prodTableWidth*0.10));
         productTable.getColumnModel().getColumn(2).setPreferredWidth((int)round(prodTableWidth*0.10));
-        productTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(prodTableWidth*0.05));
-        productTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(prodTableWidth*0.35));
+        productTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(prodTableWidth*0.10));
+        productTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(prodTableWidth*0.30));
         productTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(prodTableWidth*0.35));
         //CHANGE COLUMN ALIGMENT
-        productTable.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
+        productTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+        productTable.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
 
 
         
@@ -127,10 +158,15 @@ public class wzListWindow extends javax.swing.JFrame {
         for(int i = 0; i < prodList.size(); i++){
                 productTable.getModel().setValueAt(prodList.get(i).getId(), i, 0);
                 productTable.getModel().setValueAt(prodList.get(i).getName(), i, 1);
-                productTable.getModel().setValueAt(prodList.get(i).getProblem(), i, 3);
-                productTable.getModel().setValueAt(prodList.get(i).getRepair(), i, 4);
-                productTable.getModel().setValueAt(prodList.get(i).getPrice(), i, 5);
+                productTable.getModel().setValueAt(prodList.get(i).getSerial(), i, 2);
+                productTable.getModel().setValueAt(prodList.get(i).getPrice(), i, 3);
+                snetto += prodList.get(i).getPrice();
+                productTable.getModel().setValueAt(prodList.get(i).getProblem(), i, 4);
+                productTable.getModel().setValueAt(prodList.get(i).getRepair(), i, 5);
         }  
+        nettoLabel.setText(String.valueOf(dc.format(snetto)));
+        bruttoLabel.setText(String.valueOf(dc.format(snetto+snetto*0.23)));
+        snetto = 0;
     }
 
     @SuppressWarnings("unchecked")
@@ -149,6 +185,7 @@ public class wzListWindow extends javax.swing.JFrame {
         bruttoLabel = new javax.swing.JLabel();
         openWZBtt = new javax.swing.JButton();
         contractorNameLabel = new javax.swing.JLabel();
+        terminComm = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         newWZ = new javax.swing.JMenuItem();
@@ -164,7 +201,7 @@ public class wzListWindow extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "NUMER", "ID KLIENTA", "KLIENT", "PRZYJĘTO", "NAPRAWIONO", "WYDANO", "NR FVAT", "DATA FVAT", "SESIN", "OPTI", "STATUS"
+                "ID", "NUMER", "ID KLIENTA", "KLIENT", "PRZYJĘTO", "TERMIN", "WYDANO", "NR FVAT", "DATA FVAT", "SESIN", "OPTI", "STATUS"
             }
         ) {
             Class[] types = new Class [] {
@@ -231,6 +268,9 @@ public class wzListWindow extends javax.swing.JFrame {
         contractorNameLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         contractorNameLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        terminComm.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        terminComm.setForeground(new java.awt.Color(255, 0, 0));
+
         jMenu1.setText("Dokumenty");
 
         newWZ.setText("Nowy dokument WZ");
@@ -283,6 +323,8 @@ public class wzListWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bruttoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addComponent(terminComm, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(contractorNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -296,15 +338,16 @@ public class wzListWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(contractorNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(nettoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(contractorNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nettoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
                         .addComponent(jLabel3))
-                    .addComponent(bruttoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bruttoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(terminComm, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -320,8 +363,8 @@ public class wzListWindow extends javax.swing.JFrame {
         cont.show();
         this.disable();
     }//GEN-LAST:event_newWZActionPerformed
-    public void addDocument(int id){
-        wz.addDoc(1, nowTimestamp(), 0, id, 0, nowYear());
+    public void addDocument(int id, int sesin, int opti){
+        wz.addDoc(id, sesin, opti);
     }
     private void newWZBttActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newWZBttActionPerformed
         DocEntity doc = wz.getLastWZ();
@@ -423,5 +466,6 @@ public class wzListWindow extends javax.swing.JFrame {
     private javax.swing.JButton newWZBtt;
     private javax.swing.JButton openWZBtt;
     private javax.swing.JTable productTable;
+    private javax.swing.JLabel terminComm;
     // End of variables declaration//GEN-END:variables
 }

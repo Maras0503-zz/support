@@ -17,7 +17,7 @@ public class wzTableTemplate extends DefaultTableModel{
         return 12;
     }
     
-    String headers[] = new String[] { "ID", "NUMER","ID KLIENTA", "KLIENT", "PRZYJĘTO", "NAPRAWIONO", "WYDANO", "NR FVAT", "DATA FVAT", "SESIN", "OPTI","STATUS" };
+    String headers[] = new String[] { "ID", "NUMER","ID KLIENTA", "KLIENT", "PRZYJĘTO", "TERMIN", "WYDANO", "NR FVAT", "DATA FVAT", "SESIN", "OPTI","STATUS" };
        
     @Override
     public String getColumnName(int column) {
