@@ -7,7 +7,6 @@ package utilities;
 
 import java.awt.Component;
 import java.sql.Timestamp;
-import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import static utilities.TimeFunctions.nowTimestamp;
@@ -24,13 +23,16 @@ public class myRenderer extends DefaultTableCellRenderer{
         if (! table.isRowSelected(row)){
             stat = table.getValueAt(row, 11).toString();
             if(column == 5 && !"SPRZĘT WYDANY".equals(stat)){
-            long test1 = timestampToLong(Timestamp.valueOf(value.toString().substring(0, 18)))-86400000;
-            if(nowTimestamp() > test1)
-                c.setBackground(new java.awt.Color(255, 0, 0));
-            else
-                c.setBackground(new java.awt.Color(255, 255, 255));
-            }
-            else{
+                long delay = timestampToLong(Timestamp.valueOf(value.toString()));
+                long close = timestampToLong(Timestamp.valueOf(value.toString()))-86400000;
+                if(nowTimestamp() > delay){
+                    c.setBackground(new java.awt.Color(255, 0, 0));
+                }else if(nowTimestamp() > close){
+                    c.setBackground(new java.awt.Color(255, 255, 0));
+                }else{
+                    c.setBackground(new java.awt.Color(255, 255, 255));
+                }
+            }else{
                 c.setBackground(new java.awt.Color(255, 255, 255));
             }
 

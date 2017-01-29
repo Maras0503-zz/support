@@ -144,7 +144,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         documents.setText("Dokumenty");
 
-        newWZ.setText("Wydania z magazynu (WZ)");
+        newWZ.setText("Zlecenia serwisowe (ZS)");
         newWZ.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newWZActionPerformed(evt);

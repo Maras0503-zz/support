@@ -3,9 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/GIT/support/src/entities/DocProductEntity.java</file>
+            <file>file:/C:/GIT/support/src/windows/wzListWindow.java</file>
             <file>file:/C:/GIT/support/src/db/DbQueries.java</file>
-            <file>file:/C:/GIT/support/src/entities/ProductEntity.java</file>
+            <file>file:/C:/GIT/support/src/entities/ContractorEntity.java</file>
+            <file>file:/C:/GIT/support/src/windows/wzWindow.java</file>
         </group>
     </open-files>
 </project-private>

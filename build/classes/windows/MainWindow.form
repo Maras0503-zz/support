@@ -70,7 +70,7 @@
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="newWZ">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Wydania z magazynu (WZ)"/>
+                    <Property name="text" type="java.lang.String" value="Zlecenia serwisowe (ZS)"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newWZActionPerformed"/>

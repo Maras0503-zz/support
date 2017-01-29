@@ -17,8 +17,13 @@ public class ContractorEntity {
     String city;
     String street;
     String country;
-    
-    public ContractorEntity(int id, String name, String nip, String postalCode, String city, String street, String country) {
+    String phone;
+    String email;
+
+    public ContractorEntity() {
+    }
+        
+    public ContractorEntity(int id, String name, String nip, String postalCode, String city, String street, String country, String phone, String email) {
         this.id = id;
         this.name = name;
         this.nip = nip;
@@ -26,6 +31,8 @@ public class ContractorEntity {
         this.city = city;
         this.street = street;
         this.country = country;
+        this.phone = phone;
+        this.email = email;
     }
 
     public int getId() {
@@ -83,5 +90,20 @@ public class ContractorEntity {
     public void setCountry(String country) {
         this.country = country;
     }
-    
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }    
 }
