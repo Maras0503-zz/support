@@ -55,6 +55,7 @@ public class wzWindow extends javax.swing.JFrame {
         this.setExtendedState( this.getExtendedState()|JFrame.MAXIMIZED_BOTH);
         productToShow = db.getDocProducts(docId);
         drawProductTable(productToShow);
+        productTable.changeSelection(0, 0, false, false);
     }
 
     /**
@@ -100,10 +101,10 @@ public class wzWindow extends javax.swing.JFrame {
 
         productTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "NAZWA", "NR SERYJNY", "KOSZT", "PROBLEM", "NAPRAWY"
+                "ID", "NAZWA", "NR SERYJNY", "KOSZT", "PROBLEM", "NAPRAWY", "MIEJSCE NAPRAWY"
             }
         ));
         jScrollPane1.setViewportView(productTable);
@@ -255,6 +256,11 @@ public class wzWindow extends javax.swing.JFrame {
 
         delBtt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         delBtt.setText("Usuń zaznaczony");
+        delBtt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                delBttActionPerformed(evt);
+            }
+        });
 
         jMenu2.setText("Okno");
 
@@ -304,7 +310,7 @@ public class wzWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 6, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(addBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -316,8 +322,8 @@ public class wzWindow extends javax.swing.JFrame {
                             .addComponent(nettoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(bruttoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -327,6 +333,7 @@ public class wzWindow extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         parentFrame.enable();
         this.dispose();
+        parentFrame.show();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void addBttActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBttActionPerformed
@@ -335,8 +342,15 @@ public class wzWindow extends javax.swing.JFrame {
         this.disable();
         addProd.show();
     }//GEN-LAST:event_addBttActionPerformed
+
+    private void delBttActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delBttActionPerformed
+        confirmDeleteProductFromDocument delPos = new confirmDeleteProductFromDocument();
+        delPos.parentFrame = this;
+        this.disable();
+        delPos.show();
+    }//GEN-LAST:event_delBttActionPerformed
     float snetto;
-    private void drawProductTable(List<DocProductEntity> prodList){
+    public void drawProductTable(List<DocProductEntity> prodList){
         ProductOnDocumentTableTemplate dtm = new ProductOnDocumentTableTemplate();
         productTable.setModel(dtm);
         
@@ -348,7 +362,7 @@ public class wzWindow extends javax.swing.JFrame {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER); 
 
 
-        productTable.setSize(getScreenWidth()-21, 300);
+        productTable.setSize(getScreenWidth()-27, 300);
         productTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         int prodTableWidth = productTable.getWidth();
         
@@ -356,11 +370,13 @@ public class wzWindow extends javax.swing.JFrame {
         productTable.getColumnModel().getColumn(1).setPreferredWidth((int)round(prodTableWidth*0.10));
         productTable.getColumnModel().getColumn(2).setPreferredWidth((int)round(prodTableWidth*0.10));
         productTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(prodTableWidth*0.10));
-        productTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(prodTableWidth*0.30));
-        productTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(prodTableWidth*0.35));
+        productTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(prodTableWidth*0.25));
+        productTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(prodTableWidth*0.25));
+        productTable.getColumnModel().getColumn(6).setPreferredWidth((int)round(prodTableWidth*0.15));
         //CHANGE COLUMN ALIGMENT
         productTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
         productTable.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
+        productTable.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
 
 
         
@@ -375,6 +391,7 @@ public class wzWindow extends javax.swing.JFrame {
                 snetto += prodList.get(i).getPrice();
                 productTable.getModel().setValueAt(prodList.get(i).getProblem(), i, 4);
                 productTable.getModel().setValueAt(prodList.get(i).getRepair(), i, 5);
+                productTable.getModel().setValueAt(prodList.get(i).getPlace(), i, 6);
         }  
         nettoLabel.setText(String.valueOf(dc.format(snetto)));
         bruttoLabel.setText(String.valueOf(dc.format(snetto+snetto*0.23)));
@@ -444,7 +461,7 @@ public class wzWindow extends javax.swing.JFrame {
     private javax.swing.JLabel nettoLabel;
     private javax.swing.JLabel nipLab;
     private javax.swing.JLabel phoneLab;
-    private javax.swing.JTable productTable;
+    public javax.swing.JTable productTable;
     private javax.swing.JLabel streetLab;
     // End of variables declaration//GEN-END:variables
 }

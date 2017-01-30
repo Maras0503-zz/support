@@ -5,6 +5,7 @@
  */
 package utilities;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -20,15 +21,15 @@ import windows.MainWindow;
  * @author Marek
  */
 public class Footer extends PdfPageEventHelper {
-    Font ffont = new Font(Font.FontFamily.UNDEFINED, 12, Font.ITALIC);
+    Font ffont = new Font(Font.FontFamily.UNDEFINED, 12, Font.ITALIC, BaseColor.GRAY);
     public MainWindow parentFrame;
     
     @Override
     public void onEndPage(PdfWriter writer, Document document) {
         PdfContentByte cb = writer.getDirectContent();
-        Phrase header = new Phrase("this is a header", ffont);
+        Phrase header = new Phrase("ZLECENIE SERWISOWE", ffont);
         
-        Phrase footer = new Phrase("this is a footer", ffont);
+        Phrase footer = new Phrase("ZLECENIE SERWISOWE", ffont);
         ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
                 footer,
                 (document.right() - document.left()) / 2 + document.leftMargin(),

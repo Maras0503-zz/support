@@ -84,7 +84,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="6" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -100,8 +100,8 @@
                       </Group>
                   </Group>
               </Group>
+              <Component id="jScrollPane1" min="-2" pref="489" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="500" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -117,17 +117,23 @@
         <Component class="javax.swing.JTable" name="productTable">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="6" rowCount="1">
+              <Table columnCount="7" rowCount="1">
                 <Column editable="true" title="ID" type="java.lang.Object"/>
                 <Column editable="true" title="NAZWA" type="java.lang.Object"/>
                 <Column editable="true" title="NR SERYJNY" type="java.lang.Object"/>
                 <Column editable="true" title="KOSZT" type="java.lang.Object"/>
                 <Column editable="true" title="PROBLEM" type="java.lang.Object"/>
                 <Column editable="true" title="NAPRAWY" type="java.lang.Object"/>
+                <Column editable="true" title="MIEJSCE NAPRAWY" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
                   <Editor/>
@@ -164,6 +170,9 @@
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
@@ -447,6 +456,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Usu&#x144; zaznaczony"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="delBttActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -5,10 +5,30 @@
  */
 package windows;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import db.DbQueries;
+import entities.ContractorEntity;
 import entities.DocEntity;
 import entities.DocProductEntity;
 import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import static java.lang.Math.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -17,6 +37,8 @@ import tableTemplates.ProductOnDocumentTableTemplate;
 import tableTemplates.wzTableTemplate;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -24,9 +46,13 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import utilities.Footer;
 import static utilities.Other.getScreenWidth;
+import utilities.StampPageXofY;
 import static utilities.TimeFunctions.timestampToLong;
 import static utilities.TimeFunctions.nowTimestamp;
+import static utilities.amountInW.amountInWords;
+import utilities.companyAdress;
 import utilities.myRenderer;
 
 /**
@@ -56,12 +82,12 @@ public class wzListWindow extends javax.swing.JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 long close = timestampToLong(Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 5).toString()))-86400000;
                 long delay = timestampToLong(Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 5).toString()));
-                if(nowTimestamp() > delay && !"SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
+                if((nowTimestamp() > delay && (!"SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString()) && !"TWORZENIE DOKUMENTU".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())))){
                     terminComm.setText("TERMIN PRZEKROCZONY !");
                     terminComm.setForeground(Color.red);
                     
                 }
-                else if(nowTimestamp() > close && !"SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())) {
+                else if((nowTimestamp() > close && (!"SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString()) && !"TWORZENIE DOKUMENTU".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())))) {
                     terminComm.setText("ZBLIŻA SIĘ TERMIN ODBIORU");
                     terminComm.setForeground(Color.orange);
                 } else {
@@ -137,7 +163,7 @@ public class wzListWindow extends javax.swing.JFrame {
               WZTable.getModel().setValueAt(docList.get(i).getDocStatus(), i, 11);
         }  
     }
-    private void drawProductTable(List<DocProductEntity> prodList){
+    public void drawProductTable(List<DocProductEntity> prodList){
         ProductOnDocumentTableTemplate dtm = new ProductOnDocumentTableTemplate();
         productTable.setModel(dtm);
         
@@ -149,7 +175,7 @@ public class wzListWindow extends javax.swing.JFrame {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER); 
 
 
-        productTable.setSize(getScreenWidth()-21, 300);
+        productTable.setSize(getScreenWidth()-22, 300);
         productTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         int prodTableWidth = productTable.getWidth();
         
@@ -157,8 +183,9 @@ public class wzListWindow extends javax.swing.JFrame {
         productTable.getColumnModel().getColumn(1).setPreferredWidth((int)round(prodTableWidth*0.10));
         productTable.getColumnModel().getColumn(2).setPreferredWidth((int)round(prodTableWidth*0.10));
         productTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(prodTableWidth*0.10));
-        productTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(prodTableWidth*0.30));
-        productTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(prodTableWidth*0.35));
+        productTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(prodTableWidth*0.25));
+        productTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(prodTableWidth*0.25));
+        productTable.getColumnModel().getColumn(6).setPreferredWidth((int)round(prodTableWidth*0.15));
         //CHANGE COLUMN ALIGMENT
         productTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
         productTable.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
@@ -176,6 +203,7 @@ public class wzListWindow extends javax.swing.JFrame {
                 snetto += prodList.get(i).getPrice();
                 productTable.getModel().setValueAt(prodList.get(i).getProblem(), i, 4);
                 productTable.getModel().setValueAt(prodList.get(i).getRepair(), i, 5);
+                productTable.getModel().setValueAt(prodList.get(i).getPlace(), i, 6);
         }  
         nettoLabel.setText(String.valueOf(dc.format(snetto)));
         bruttoLabel.setText(String.valueOf(dc.format(snetto+snetto*0.23)));
@@ -199,6 +227,8 @@ public class wzListWindow extends javax.swing.JFrame {
         openWZBtt = new javax.swing.JButton();
         contractorNameLabel = new javax.swing.JLabel();
         terminComm = new javax.swing.JLabel();
+        accDoc = new javax.swing.JButton();
+        printDoc = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         newWZ = new javax.swing.JMenuItem();
@@ -228,7 +258,7 @@ public class wzListWindow extends javax.swing.JFrame {
         jScrollPane1.setViewportView(WZTable);
 
         delWZBtt.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        delWZBtt.setText("-");
+        delWZBtt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delDoc.png"))); // NOI18N
         delWZBtt.setMaximumSize(new java.awt.Dimension(40, 40));
         delWZBtt.setMinimumSize(new java.awt.Dimension(40, 40));
         delWZBtt.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -239,7 +269,7 @@ public class wzListWindow extends javax.swing.JFrame {
         });
 
         newWZBtt.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        newWZBtt.setText("+");
+        newWZBtt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/addDoc.png"))); // NOI18N
         newWZBtt.setMaximumSize(new java.awt.Dimension(40, 40));
         newWZBtt.setMinimumSize(new java.awt.Dimension(40, 40));
         newWZBtt.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -251,10 +281,10 @@ public class wzListWindow extends javax.swing.JFrame {
 
         productTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "NAZWA", "NR SERYJNY", "KOSZT", "PROBLEM", "NAPRAWY"
+                "ID", "NAZWA", "NR SERYJNY", "KOSZT", "PROBLEM", "NAPRAWY", "MIEJSCE NAPRAWY"
             }
         ));
         jScrollPane2.setViewportView(productTable);
@@ -270,7 +300,7 @@ public class wzListWindow extends javax.swing.JFrame {
         bruttoLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
 
         openWZBtt.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        openWZBtt.setText("o");
+        openWZBtt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/editDoc.png"))); // NOI18N
         openWZBtt.setMaximumSize(new java.awt.Dimension(40, 40));
         openWZBtt.setMinimumSize(new java.awt.Dimension(40, 40));
         openWZBtt.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -286,6 +316,28 @@ public class wzListWindow extends javax.swing.JFrame {
         terminComm.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         terminComm.setForeground(new java.awt.Color(255, 0, 0));
         terminComm.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        accDoc.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        accDoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/confirmDoc.png"))); // NOI18N
+        accDoc.setMaximumSize(new java.awt.Dimension(40, 40));
+        accDoc.setMinimumSize(new java.awt.Dimension(40, 40));
+        accDoc.setPreferredSize(new java.awt.Dimension(40, 40));
+        accDoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accDocActionPerformed(evt);
+            }
+        });
+
+        printDoc.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        printDoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/print.png"))); // NOI18N
+        printDoc.setMaximumSize(new java.awt.Dimension(40, 40));
+        printDoc.setMinimumSize(new java.awt.Dimension(40, 40));
+        printDoc.setPreferredSize(new java.awt.Dimension(40, 40));
+        printDoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printDocActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("Dokumenty");
 
@@ -326,14 +378,18 @@ public class wzListWindow extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(contractorNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(newWZBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(newWZBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(delWZBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(openWZBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(openWZBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(delWZBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(accDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(printDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(nettoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -351,9 +407,11 @@ public class wzListWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(delWZBtt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(delWZBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(newWZBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(openWZBtt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(openWZBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(accDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(printDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -430,7 +488,244 @@ public class wzListWindow extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         parentFrame.enable();
         this.dispose();
+        parentFrame.show();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void accDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accDocActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_accDocActionPerformed
+    public PdfPCell createCell(String content, int alignment) throws IOException, DocumentException {
+        BaseFont ft = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1250, BaseFont.EMBEDDED);
+        Font ffont = new Font(ft,9);
+        Phrase ph = new Phrase(content);
+        ph.setFont(ffont);
+        PdfPCell cell = new PdfPCell(Phrase.getInstance(Element.ALIGN_CENTER, content, ffont));
+        cell.setHorizontalAlignment(alignment);
+        return cell;
+    }
+    private void printDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printDocActionPerformed
+      Document document = new Document();
+      Footer ft = new Footer();
+      companyAdress comp = new companyAdress();
+      
+      try
+      {  
+        BaseFont ft1 = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1250, BaseFont.EMBEDDED);
+        Font ffont = new Font(ft1,12);
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("test.pdf"));
+        document.open();
+        Paragraph pr = new Paragraph();
+        pr.setFont(ffont);
+        writer.setPageEvent(ft);
+        ContractorEntity  contractor = wz.getContractor(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 2).toString()));
+
+        pr.add(WZTable.getValueAt(WZTable.getSelectedRow(), 4).toString());
+        pr.setAlignment(Element.ALIGN_RIGHT);
+        document.add(pr);
+        
+        pr.clear();
+        pr.setAlignment(Element.ALIGN_LEFT);
+        pr.add(comp.getName());
+        pr.add(Chunk.NEWLINE);
+        pr.add("ul. "+comp.getStreet());
+        pr.add(Chunk.NEWLINE);
+        pr.add(comp.getPostal()+" "+comp.getCity());
+        pr.add(Chunk.NEWLINE);
+        pr.add("NIP: "+comp.getNip());
+        pr.add(Chunk.NEWLINE);
+        pr.add("Tel: "+comp.getPhone());
+        pr.add(Chunk.NEWLINE);
+        pr.add("Fax: "+comp.getFax());
+        pr.add(Chunk.NEWLINE);
+        pr.add("E-mail: "+comp.getEmail());
+        pr.add(Chunk.NEWLINE);
+        pr.add(Chunk.NEWLINE);
+        pr.add("KLIENT:");
+        pr.add(Chunk.NEWLINE);
+        pr.add(contractor.getName());
+        pr.add(Chunk.NEWLINE);
+        pr.add("ul. "+contractor.getStreet());
+        pr.add(Chunk.NEWLINE);
+        pr.add(contractor.getPostalCode()+" "+contractor.getCity());
+        pr.add(Chunk.NEWLINE);
+        pr.add("NIP: "+contractor.getNip());
+        pr.add(Chunk.NEWLINE);
+        pr.add("Tel: "+contractor.getPhone());
+        pr.add(Chunk.NEWLINE);
+        pr.add("E-mail: "+contractor.getEmail());
+        document.add(pr);
+        
+        pr.clear();
+        pr.add(Chunk.NEWLINE);
+        pr.add(Chunk.NEWLINE);
+        pr.add("PRZYJĘTE URZĄDZENIA:");
+        document.add(pr);
+        
+        //PUT IMAGE FROM DRIVE
+        java.awt.Image awtImage = Toolkit.getDefaultToolkit().createImage("C:/GIT/support/logo.jpg");
+        Image img = com.itextpdf.text.Image.getInstance(awtImage, null);
+        int indentation = 0;
+        float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
+               - document.rightMargin() - indentation) / img.getWidth()) * 20;
+        img.scalePercent(scaler);
+        img.setAbsolutePosition(document.right()-90, document.top()-150);
+        document.add(new Paragraph());
+        document.add(img);
+        
+        //ADD TABLE
+        
+        PdfPTable table = new PdfPTable(7); // 3 columns.
+        table.setWidthPercentage(100); //Width 100%
+        table.setSpacingBefore(10f); //Space before table
+        table.setSpacingAfter(10f); //Space after table
+        //Set Column widths
+        float[] columnWidths = {1f, 4f, 3f, 2f, 2f, 6f, 6f};
+        table.setWidths(columnWidths);
+        BaseFont ft2 = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1250, BaseFont.EMBEDDED);
+        Font headerFont = new Font(ft2,9);
+        Paragraph pos1 = new Paragraph("",headerFont);
+        Paragraph pos2 = new Paragraph("",headerFont);
+        Paragraph pos3 = new Paragraph("",headerFont);
+        Paragraph pos4 = new Paragraph("",headerFont);
+        Paragraph pos5 = new Paragraph("",headerFont);
+        Paragraph pos6 = new Paragraph("",headerFont);
+        Paragraph pos7 = new Paragraph("",headerFont);
+
+        //FORMATING TABLE
+        pos1.clear();
+        pos1.add("LP");
+        PdfPCell cell1 = new PdfPCell(pos1);
+        cell1.setBorderColor(BaseColor.BLACK);
+        cell1.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell1);
+        pos2.clear();
+        pos2.add("NAZWA");
+        PdfPCell cell2 = new PdfPCell(pos2);
+        cell2.setBorderColor(BaseColor.BLACK);
+        cell2.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell2);
+        pos3.clear();
+        pos3.add("NR SERYJNY");
+        PdfPCell cell3 = new PdfPCell(pos3);
+        cell3.setBorderColor(BaseColor.BLACK);
+        cell3.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell3);
+        pos4.clear();
+        pos4.add("CENA NETTO");
+        PdfPCell cell4 = new PdfPCell(pos4);
+        cell4.setBorderColor(BaseColor.BLACK);
+        cell4.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell4);
+        pos5.clear();
+        pos5.add("CENA BRUTTO");
+        PdfPCell cell5 = new PdfPCell(pos5);
+        cell5.setBorderColor(BaseColor.BLACK);
+        cell5.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell5);
+        pos6.clear();
+        pos6.add("PROBLEM");
+        PdfPCell cell6 = new PdfPCell(pos6);
+        cell6.setBorderColor(BaseColor.BLACK);
+        cell6.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell6.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell6);
+        pos7.clear();
+        pos7.add("NAPRAWA");
+        PdfPCell cell7 = new PdfPCell(pos7);
+        cell7.setBorderColor(BaseColor.BLACK);
+        cell7.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        cell7.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell7.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell7);
+        
+        cell2.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell3.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell4.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell5.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell6.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell7.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell1.setBackgroundColor(BaseColor.WHITE);
+        cell2.setBackgroundColor(BaseColor.WHITE);
+        cell3.setBackgroundColor(BaseColor.WHITE);
+        cell4.setBackgroundColor(BaseColor.WHITE);
+        cell5.setBackgroundColor(BaseColor.WHITE);
+        cell6.setBackgroundColor(BaseColor.WHITE);
+        cell7.setBackgroundColor(BaseColor.WHITE);
+        int counter = 1;
+        for(DocProductEntity prod : productToShow){
+            //col 1 (LP)
+            table.addCell(createCell(""+counter, Element.ALIGN_CENTER));
+            counter++;
+            //col 2 (NAME)
+            table.addCell(createCell(prod.getName(), Element.ALIGN_LEFT));
+            //col 3 (NR SER)
+            table.addCell(createCell(prod.getSerial(), Element.ALIGN_CENTER));
+            //col 4 (NETTO)
+            table.addCell(createCell(String.valueOf(prod.getPrice()), Element.ALIGN_RIGHT));
+            //col 5 (BRUTTO)
+            table.addCell(createCell(String.valueOf(prod.getPrice()+(prod.getPrice()*0.23)), Element.ALIGN_RIGHT));
+            //col 6 (PROBLEM)
+            table.addCell(createCell(prod.getProblem(), Element.ALIGN_LEFT)); 
+            //col 7 (REPAIRS)
+            table.addCell(createCell(prod.getRepair(), Element.ALIGN_LEFT));
+        } 
+        document.add(table);
+        pr.setAlignment(Element.ALIGN_RIGHT);
+        pr.clear();
+        pr.add("Razem netto: "+ nettoLabel.getText()+" Razem brutto: "+bruttoLabel.getText());
+        document.add(pr);
+        pr.clear();
+        pr.add("Słownie: "+amountInWords(Float.valueOf(bruttoLabel.getText().replace(",", "."))));
+        document.add(pr);
+        pr.clear();
+        document.add(Chunk.NEWLINE);
+        document.add(Chunk.NEWLINE);
+        document.add(Chunk.NEWLINE);
+        pr.add(".................................................");
+        document.add(pr);
+        pr.clear();
+        pr.add("Podpis i pieczątka pracownika");
+        document.add(pr);
+        //CLOSING DOCUMENT
+        document.close(); 
+        writer.close();
+        
+        } catch (DocumentException e)
+        {
+            e.printStackTrace();
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+        StampPageXofY numeration = new StampPageXofY();
+        numeration.manipulatePdf("test.pdf", "test1.pdf");
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DocumentException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //OPEN READY DOCUMENT
+        try {
+            Desktop.getDesktop().open(new File("C:/GIT/support/test1.pdf"));
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_printDocActionPerformed
 
     /**
      * @param args the command line arguments
@@ -476,6 +771,7 @@ public class wzListWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JTable WZTable;
+    private javax.swing.JButton accDoc;
     private javax.swing.JLabel bruttoLabel;
     private javax.swing.JLabel contractorNameLabel;
     private javax.swing.JButton delWZBtt;
@@ -491,7 +787,8 @@ public class wzListWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem newWZ;
     private javax.swing.JButton newWZBtt;
     private javax.swing.JButton openWZBtt;
-    private javax.swing.JTable productTable;
+    private javax.swing.JButton printDoc;
+    public javax.swing.JTable productTable;
     private javax.swing.JLabel terminComm;
     // End of variables declaration//GEN-END:variables
 }

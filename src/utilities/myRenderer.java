@@ -22,7 +22,7 @@ public class myRenderer extends DefaultTableCellRenderer{
         Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
         if (! table.isRowSelected(row)){
             stat = table.getValueAt(row, 11).toString();
-            if(column == 5 && !"SPRZĘT WYDANY".equals(stat)){
+            if(column == 5 && !"SPRZĘT WYDANY".equals(stat)&& !"TWORZENIE DOKUMENTU".equals(stat)){
                 long delay = timestampToLong(Timestamp.valueOf(value.toString()));
                 long close = timestampToLong(Timestamp.valueOf(value.toString()))-86400000;
                 if(nowTimestamp() > delay){

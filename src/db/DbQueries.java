@@ -42,6 +42,7 @@ public class DbQueries {
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
     }
     //GET LIST OF GROUPS FROM DB
     public List<groupEntity> getGroups(){
@@ -84,6 +85,7 @@ public class DbQueries {
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
     } 
     
     //LOOKING FOR CONTRACTOR
@@ -119,6 +121,7 @@ public class DbQueries {
        catch(Exception e){
            e.printStackTrace();
        }
+       conn.disconnect();
        return resultList;
     }
     
@@ -250,6 +253,7 @@ public class DbQueries {
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
         return result;
     }
     
@@ -282,6 +286,7 @@ public class DbQueries {
         } catch(Exception e) {
             e.printStackTrace();
         }
+        conn.disconnect();
         return contractor;
     }
     
@@ -333,6 +338,7 @@ public class DbQueries {
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
         return result;
     }
     //ADD DOCUMENT (CONTRACTOR ID, SESIN, OPTI, DEADLINE)
@@ -362,6 +368,7 @@ public class DbQueries {
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
     }
     
     //ADD DOCUMENT (CON ID, SESIN, WITHOUT OPTI, DEADLINE)
@@ -390,6 +397,7 @@ public class DbQueries {
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
     }
     
     //ADD DOCUMENT (CON ID, WITHOUT SESIN, WITHOUT OPTI, DEADLINE)
@@ -417,10 +425,12 @@ public class DbQueries {
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
     }
     
     //ADD DOCUMENT (CON ID, WITHOUT SESIN, WITH OPTI, DEADLINE)
-    public void addDocOpti(int contractorId, int opti, Long dl){
+    public int addDocOpti(int contractorId, int opti, Long dl){
+        int rowInserted = 0;
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
@@ -440,11 +450,13 @@ public class DbQueries {
         
         
         
-        int rowInserted = conn.stmt.executeUpdate();
+        rowInserted = conn.stmt.executeUpdate();
         }
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
+        return rowInserted;
     }
     
     //DELETE DOCUMENT
@@ -461,8 +473,94 @@ public class DbQueries {
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();        
     }
-
+    
+    //CHECK REPAIR PLACE ID
+    
+    public int getRepairPlaceId(String repairPlace){
+        conn.connect();
+        int id = 0;    
+        try{
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement("select repair_place_id from repair_place_tab where repair_place_name=?");
+            conn.stmt.setString(1, repairPlace);
+            conn.result = conn.stmt.executeQuery();
+            while(conn.result.next()){
+                id = conn.result.getInt("repair_place_id");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        conn.disconnect();
+        return id;
+    }
+    
+    //CHECK PRODUCT ID 
+    public int getProductId(String productName){
+        conn.connect();
+        int id = 0;    
+        try{
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement("select product_id from product_tab where product_description=?");
+            conn.stmt.setString(1, productName);
+            conn.result = conn.stmt.executeQuery();
+            while(conn.result.next()){
+                id = conn.result.getInt("product_id");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        conn.disconnect();
+        return id;
+    }
+    
+    //DELETE PRODUCT FORM DOCUMENT
+    
+    public void delProductFromDocument(int docId, int prodId, String serial, String problem, String repairs, float price, int place){
+        conn.connect();
+        try{
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
+                    "delete from document_rekords where document_rekords_document_id=? and document_rekords_product_id=? and document_rekords_serial=? and document_rekords_problem=? and document_rekords_repairs=? and document_rekords_price=? and document_rekords_repair_place=? limit 1"
+            );
+            conn.stmt.setInt(1, docId);
+            conn.stmt.setInt(2, prodId);
+            conn.stmt.setString(3, serial);
+            conn.stmt.setString(4, problem);
+            conn.stmt.setString(5, repairs);
+            conn.stmt.setFloat(6, price);
+            conn.stmt.setInt(7, place);
+            conn.stmt.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    //ADD PRODUCT TO DOCUMENT
+    public int addProductToDocument(int docId, int prodId, String serial, String problem, String repairs, float price, int place){
+    int rowInserted = 0;
+    conn.connect();
+        try{
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
+                    "insert into document_rekords (document_rekords_document_id, document_rekords_product_id, document_rekords_serial, document_rekords_problem, document_rekords_repairs, document_rekords_price, document_rekords_repair_place)"
+                            + " values (?,?,?,?,?,?,?)"
+            );
+        conn.stmt.setInt(1, docId);
+        conn.stmt.setInt(2, prodId);
+        conn.stmt.setString(3, serial);
+        conn.stmt.setString(4, problem);
+        conn.stmt.setString(5, repairs);
+        conn.stmt.setFloat(6, price);
+        conn.stmt.setInt(7, place);
+        
+        
+        
+        rowInserted = conn.stmt.executeUpdate();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        conn.disconnect();
+        return rowInserted;
+    }
     
     //GET PRODUCT LIST
 
@@ -489,6 +587,7 @@ public class DbQueries {
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
         return resultList;
     }
     
@@ -520,12 +619,14 @@ public class DbQueries {
                 price = conn.result.getFloat("document_rekords_price");
                 problem = conn.result.getString("document_rekords_problem");
                 repair = conn.result.getString("document_rekords_repairs");
+                place = conn.result.getString("repair_place_name");
                 resultList.add(new DocProductEntity(id, description, serial, price, problem, repair, place));
             }
         }
         catch(Exception e){
             e.printStackTrace();
         }
+        conn.disconnect();
         return resultList;
     }
     
@@ -547,7 +648,7 @@ public class DbQueries {
         }catch(Exception e){
             e.printStackTrace();
         }
-        
+        conn.disconnect();
         return resultList;
     }
 }
