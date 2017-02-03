@@ -66,6 +66,7 @@ public class wzListWindow extends javax.swing.JFrame {
     float snetto = 0;
     int setNowModelCounter = 0;
     Long tmpTime;
+    Long tempName;
     
     wzTableTemplate dtm = new wzTableTemplate();
     DbQueries wz = new DbQueries();
@@ -79,6 +80,7 @@ public class wzListWindow extends javax.swing.JFrame {
 
         ListSelectionModel selectionModel = WZTable.getSelectionModel();
         selectionModel.addListSelectionListener(new ListSelectionListener() {
+            @Override
             public void valueChanged(ListSelectionEvent e) {
                 long close = timestampToLong(Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 5).toString()))-86400000;
                 long delay = timestampToLong(Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 5).toString()));
@@ -92,6 +94,34 @@ public class wzListWindow extends javax.swing.JFrame {
                     terminComm.setForeground(Color.orange);
                 } else {
                     terminComm.setText("");
+                }
+                if("TWORZENIE DOKUMENTU".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
+                    printDoc.hide();
+                    accDoc.show();
+                    delWZBtt.show();
+                    endDoc.hide();
+                    openWZBtt.show();
+                }
+                if("SPRZĘT PRZYJĘTY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
+                    printDoc.show();
+                    accDoc.hide();
+                    delWZBtt.hide();
+                    endDoc.show();
+                    openWZBtt.show();
+                }
+                if("SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
+                    printDoc.show();
+                    accDoc.hide();
+                    delWZBtt.hide();
+                    endDoc.hide();
+                    openWZBtt.show();
+                }
+                if("GOTOWY DO WYDANIA".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
+                    printDoc.hide();
+                    accDoc.show();
+                    delWZBtt.show();
+                    endDoc.hide();
+                    openWZBtt.show();
                 }
                 selectedDocId = Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString());
                 productToShow = wz.getDocProducts(selectedDocId);
@@ -112,9 +142,9 @@ public class wzListWindow extends javax.swing.JFrame {
         WZTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         int WZTableWidth = WZTable.getWidth();
         WZTable.getColumnModel().getColumn(0).setPreferredWidth((int)round(WZTableWidth*0.05));
-        WZTable.getColumnModel().getColumn(1).setPreferredWidth((int)round(WZTableWidth*0.05));
-        WZTable.getColumnModel().getColumn(2).setPreferredWidth((int)round(WZTableWidth*0.05));
-        WZTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(WZTableWidth*0.18));
+        WZTable.getColumnModel().getColumn(1).setPreferredWidth((int)round(WZTableWidth*0.04));
+        WZTable.getColumnModel().getColumn(2).setPreferredWidth((int)round(WZTableWidth*0.04));
+        WZTable.getColumnModel().getColumn(3).setPreferredWidth((int)round(WZTableWidth*0.17));
         WZTable.getColumnModel().getColumn(4).setPreferredWidth((int)round(WZTableWidth*0.10));
         WZTable.getColumnModel().getColumn(5).setPreferredWidth((int)round(WZTableWidth*0.10));
         WZTable.getColumnModel().getColumn(6).setPreferredWidth((int)round(WZTableWidth*0.10));
@@ -123,6 +153,7 @@ public class wzListWindow extends javax.swing.JFrame {
         WZTable.getColumnModel().getColumn(9).setPreferredWidth((int)round(WZTableWidth*0.05));
         WZTable.getColumnModel().getColumn(10).setPreferredWidth((int)round(WZTableWidth*0.05));
         WZTable.getColumnModel().getColumn(11).setPreferredWidth((int)round(WZTableWidth*0.12));
+        WZTable.getColumnModel().getColumn(12).setPreferredWidth((int)round(WZTableWidth*0.03));
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //INPUT DATA INTO TABLE
         dtm.setRowCount(docList.size());    
@@ -161,6 +192,11 @@ public class wzListWindow extends javax.swing.JFrame {
                     WZTable.getModel().setValueAt("---", i, 10);
               }
               WZTable.getModel().setValueAt(docList.get(i).getDocStatus(), i, 11);
+              if(docList.get(i).getDocType() == 1){
+                WZTable.getModel().setValueAt("PS",i,12);
+              }else if(docList.get(i).getDocType() == 2){
+                WZTable.getModel().setValueAt("WS",i,12);  
+              }
         }  
     }
     public void drawProductTable(List<DocProductEntity> prodList){
@@ -229,6 +265,7 @@ public class wzListWindow extends javax.swing.JFrame {
         terminComm = new javax.swing.JLabel();
         accDoc = new javax.swing.JButton();
         printDoc = new javax.swing.JButton();
+        endDoc = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         newWZ = new javax.swing.JMenuItem();
@@ -259,6 +296,7 @@ public class wzListWindow extends javax.swing.JFrame {
 
         delWZBtt.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         delWZBtt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delDoc.png"))); // NOI18N
+        delWZBtt.setToolTipText("USUŃ DOKUMENT");
         delWZBtt.setMaximumSize(new java.awt.Dimension(40, 40));
         delWZBtt.setMinimumSize(new java.awt.Dimension(40, 40));
         delWZBtt.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -270,6 +308,7 @@ public class wzListWindow extends javax.swing.JFrame {
 
         newWZBtt.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         newWZBtt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/addDoc.png"))); // NOI18N
+        newWZBtt.setToolTipText("NOWY DOKUMENT");
         newWZBtt.setMaximumSize(new java.awt.Dimension(40, 40));
         newWZBtt.setMinimumSize(new java.awt.Dimension(40, 40));
         newWZBtt.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -301,6 +340,7 @@ public class wzListWindow extends javax.swing.JFrame {
 
         openWZBtt.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         openWZBtt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/editDoc.png"))); // NOI18N
+        openWZBtt.setToolTipText("OTWÓRZ DOKUMENT");
         openWZBtt.setMaximumSize(new java.awt.Dimension(40, 40));
         openWZBtt.setMinimumSize(new java.awt.Dimension(40, 40));
         openWZBtt.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -319,6 +359,7 @@ public class wzListWindow extends javax.swing.JFrame {
 
         accDoc.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         accDoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/confirmDoc.png"))); // NOI18N
+        accDoc.setToolTipText("ZATWIERDZ DOKUMENT");
         accDoc.setMaximumSize(new java.awt.Dimension(40, 40));
         accDoc.setMinimumSize(new java.awt.Dimension(40, 40));
         accDoc.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -330,12 +371,25 @@ public class wzListWindow extends javax.swing.JFrame {
 
         printDoc.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         printDoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/print.png"))); // NOI18N
+        printDoc.setToolTipText("DRUKUJ DOKUMENT");
         printDoc.setMaximumSize(new java.awt.Dimension(40, 40));
         printDoc.setMinimumSize(new java.awt.Dimension(40, 40));
         printDoc.setPreferredSize(new java.awt.Dimension(40, 40));
         printDoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 printDocActionPerformed(evt);
+            }
+        });
+
+        endDoc.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        endDoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/endDoc.png"))); // NOI18N
+        endDoc.setToolTipText("ZATWIERDZ DOKUMENT");
+        endDoc.setMaximumSize(new java.awt.Dimension(40, 40));
+        endDoc.setMinimumSize(new java.awt.Dimension(40, 40));
+        endDoc.setPreferredSize(new java.awt.Dimension(40, 40));
+        endDoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                endDocActionPerformed(evt);
             }
         });
 
@@ -388,7 +442,9 @@ public class wzListWindow extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(accDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(printDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(printDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(endDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -411,7 +467,8 @@ public class wzListWindow extends javax.swing.JFrame {
                     .addComponent(newWZBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(openWZBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(accDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(printDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(printDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(endDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -462,7 +519,7 @@ public class wzListWindow extends javax.swing.JFrame {
 
     private void delWZBttActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delWZBttActionPerformed
         selectedDocId = Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString());
-        if ( "TWORZENIE DOKUMENTU".equals(WZTable.getValueAt(WZTable.getSelectedRow(),11).toString())){
+        if ( "TWORZENIE DOKUMENTU".equals(WZTable.getValueAt(WZTable.getSelectedRow(),11).toString()) || "GOTOWY DO WYDANIA".equals(WZTable.getValueAt(WZTable.getSelectedRow(),11).toString())){
             confirmDeleteDocument confDel = new confirmDeleteDocument();
             confDel.setDocumentID(selectedDocId);
             confDel.setSelectedRow(WZTable.getSelectedRow());
@@ -492,7 +549,16 @@ public class wzListWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void accDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accDocActionPerformed
-        // TODO add your handling code here:
+        if(productToShow.isEmpty()){
+            DocumentEmptyAlert allert = new DocumentEmptyAlert();
+            allert.parentFrame = this;
+            this.disable();
+            allert.show();
+        }else{
+            wz.acceptDocument(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString()), WZTable.getValueAt(WZTable.getSelectedRow(),11).toString());
+            toShow = wz.getWZDocs();
+            drawTable(toShow);
+         }
     }//GEN-LAST:event_accDocActionPerformed
     public PdfPCell createCell(String content, int alignment) throws IOException, DocumentException {
         BaseFont ft = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1250, BaseFont.EMBEDDED);
@@ -512,16 +578,39 @@ public class wzListWindow extends javax.swing.JFrame {
       {  
         BaseFont ft1 = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1250, BaseFont.EMBEDDED);
         Font ffont = new Font(ft1,12);
+        
+        BaseFont ft3 = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1250, BaseFont.EMBEDDED);
+        Font bold = new Font(ft1,12,Font.BOLD);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("test.pdf"));
         document.open();
         Paragraph pr = new Paragraph();
         pr.setFont(ffont);
         writer.setPageEvent(ft);
         ContractorEntity  contractor = wz.getContractor(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 2).toString()));
-
         pr.add(WZTable.getValueAt(WZTable.getSelectedRow(), 4).toString());
         pr.setAlignment(Element.ALIGN_RIGHT);
         document.add(pr);
+        pr.clear();
+        if("SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
+        int rok = Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 4).toString()).getYear()+1900;
+        Paragraph nr = new Paragraph("WYADNIE SPRZĘTU NR ", ffont);
+        String yearSlashnr = rok+"/"+WZTable.getValueAt(WZTable.getSelectedRow(), 1).toString();
+        nr.add(new Chunk(yearSlashnr,bold));
+        nr.add(Chunk.NEWLINE);
+        nr.add(Chunk.NEWLINE);
+        nr.setAlignment(Element.ALIGN_LEFT);
+        document.add(nr);
+        }
+        if("SPRZĘT PRZYJĘTY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
+        int rok = Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 4).toString()).getYear()+1900;
+        Paragraph nr = new Paragraph("PRZYJĘCIE SPRZĘTU NR ", ffont);
+        String yearSlashnr = rok+"/"+WZTable.getValueAt(WZTable.getSelectedRow(), 1).toString();
+        nr.add(new Chunk(yearSlashnr,bold));
+        nr.add(Chunk.NEWLINE);
+        nr.add(Chunk.NEWLINE);
+        nr.setAlignment(Element.ALIGN_LEFT);
+        document.add(nr);
+        }
         
         pr.clear();
         pr.setAlignment(Element.ALIGN_LEFT);
@@ -683,6 +772,9 @@ public class wzListWindow extends javax.swing.JFrame {
         document.add(table);
         pr.setAlignment(Element.ALIGN_RIGHT);
         pr.clear();
+        pr.add("PRZEWIDYWANIY KOSZT NAPRAWY:");
+        document.add(pr);
+        pr.clear();
         pr.add("Razem netto: "+ nettoLabel.getText()+" Razem brutto: "+bruttoLabel.getText());
         document.add(pr);
         pr.clear();
@@ -697,6 +789,16 @@ public class wzListWindow extends javax.swing.JFrame {
         pr.clear();
         pr.add("Podpis i pieczątka pracownika");
         document.add(pr);
+        if("SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
+            pr.clear();
+            pr.add(Chunk.NEWLINE);
+            pr.add(Chunk.NEWLINE);
+            pr.add(".................................................");
+            document.add(pr);
+            pr.clear();
+            pr.add("Sprzęt odebrałem (Podpis klienta)");
+            document.add(pr);
+        }
         //CLOSING DOCUMENT
         document.close(); 
         writer.close();
@@ -713,7 +815,8 @@ public class wzListWindow extends javax.swing.JFrame {
 
         try {
         StampPageXofY numeration = new StampPageXofY();
-        numeration.manipulatePdf("test.pdf", "test1.pdf");
+        tempName=nowTimestamp();
+        numeration.manipulatePdf("test.pdf", tempName+".pdf");
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DocumentException ex) {
@@ -721,11 +824,18 @@ public class wzListWindow extends javax.swing.JFrame {
         }
         //OPEN READY DOCUMENT
         try {
-            Desktop.getDesktop().open(new File("C:/GIT/support/test1.pdf"));
+            Desktop.getDesktop().open(new File("C:/GIT/support/"+tempName+".pdf"));
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_printDocActionPerformed
+
+    private void endDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endDocActionPerformed
+        wz.createWsDocumentFromPs(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString()));
+        toShow = wz.getWZDocs();
+        drawTable(toShow);
+        WZTable.changeSelection(0, 0, false, false);
+    }//GEN-LAST:event_endDocActionPerformed
 
     /**
      * @param args the command line arguments
@@ -775,6 +885,7 @@ public class wzListWindow extends javax.swing.JFrame {
     private javax.swing.JLabel bruttoLabel;
     private javax.swing.JLabel contractorNameLabel;
     private javax.swing.JButton delWZBtt;
+    private javax.swing.JButton endDoc;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;

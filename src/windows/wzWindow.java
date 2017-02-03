@@ -11,7 +11,6 @@ import entities.DocEntity;
 import entities.DocProductEntity;
 import java.awt.Color;
 import static java.lang.Math.round;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class wzWindow extends javax.swing.JFrame {
         initComponents();
         selectedDocument = docId;
         doc = db.getDocument(docId);
-        if("SPRZĘT WYDANY".equals(doc.getDocStatus())){
+        if("SPRZĘT WYDANY".equals(doc.getDocStatus()) || "SPRZĘT PRZYJĘTY".equals(doc.getDocStatus())){
             addBtt.hide();
             delBtt.hide();
         }

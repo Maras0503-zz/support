@@ -398,6 +398,7 @@ public class ContractorChoice extends javax.swing.JFrame {
             
             parentFrameWzWindow.toShow = parentFrameWzWindow.wz.getWZDocs();
             parentFrameWzWindow.drawTable(parentFrameWzWindow.toShow);
+            parentFrameWzWindow.WZTable.changeSelection(1, 1, false, false);
             parentFrameWzWindow.WZTable.changeSelection(0, 0, false, false);
             parentFrameWzWindow.enable();   
             this.hide();

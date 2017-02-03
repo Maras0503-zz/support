@@ -8,16 +8,20 @@ package db;
 import entities.ContractorEntity;
 import entities.DocEntity;
 import entities.DocProductEntity;
+import entities.DocWSProduct;
 import entities.ProductEntity;
 import entities.groupEntity;
 import entities.repairLocationEntity;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Timestamp;
 import static utilities.TimeFunctions.longToTimestamp;
 import static utilities.TimeFunctions.nowTimestamp;
+import static utilities.TimeFunctions.timestampToLong;
 
 /**
  *
@@ -148,7 +152,7 @@ public class DbQueries {
                             + " FROM document_tab"
                             + " inner join contractor_tab on document_tab.document_contractor_id=contractor_tab.contractor_id"
                             + " inner join status_tab on document_tab.document_status = status_tab.status_id"
-                            + " where document_type=1 and document_number = 0 order by document_id desc"
+                            + " where (document_type=1 or document_type=2) and document_number = 0 order by document_id desc"
             );
  
             conn.result = conn.stmt.executeQuery();
@@ -176,7 +180,7 @@ public class DbQueries {
                             + " FROM document_tab"
                             + " inner join contractor_tab on document_tab.document_contractor_id=contractor_tab.contractor_id"
                             + " inner join status_tab on document_tab.document_status = status_tab.status_id"
-                            + " where document_type=1 and document_number <> 0 order by document_number desc limit 30"
+                            + " where (document_type=1 or document_type=2) and document_number <> 0 order by document_number desc limit 30"
             );
             conn.result = conn.stmt.executeQuery();
                         
@@ -314,7 +318,7 @@ public class DbQueries {
                     "select *, contractor_name from document_tab"
                             + " join contractor_tab on contractor_tab.contractor_id = document_tab.document_contractor_id"
                             + " join status_tab on status_id = document_tab.document_status"
-                            + " where document_type=1 and document_id=? order by document_id desc limit 1"
+                            + " where document_id=? order by document_id desc limit 1"
             );
             conn.stmt.setInt(1, docId);
             conn.result = conn.stmt.executeQuery();
@@ -465,6 +469,17 @@ public class DbQueries {
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
                     "delete from document_tab where document_id=?"
+        );
+        conn.stmt.setInt(1, docId);
+        
+        int rowInserted = conn.stmt.executeUpdate();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        try{
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
+                    "delete from document_rekords where document_rekords_document_id=?"
         );
         conn.stmt.setInt(1, docId);
         
@@ -630,6 +645,109 @@ public class DbQueries {
         return resultList;
     }
     
+    //CREATE WS
+    public void createWsDocumentFromPs(int docId){
+        List<DocWSProduct> resultList = new ArrayList<>();
+        int rowInserted = 0;
+        ResultSet newId;
+        int lastInsertedId = 0;
+        int id = 0;
+        String serial = "";
+        float price = 0;
+        String problem = "";
+        String repair = "";
+        int place = 0;
+        DocEntity doc = getDocument(docId);
+        conn.connect();
+        
+        try{
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
+                    "insert into document_tab (document_type, document_leaving_date, document_repair_date, document_receipt_date, document_contractor_id, document_number, document_fvat_number, document_fvat_date, document_sesin, document_opti, document_status) "
+                            + "values (?,?,?,?,?,?,?,?,?,?,?)"
+                    
+                    , Statement.RETURN_GENERATED_KEYS
+        );
+        conn.stmt.setInt(1, 2);
+        conn.stmt.setLong(2, nowTimestamp());
+        conn.stmt.setLong(3, timestampToLong(doc.getDocRepairDate()));
+        conn.stmt.setLong(4, 0);
+        conn.stmt.setInt(5, doc.getDocContractorId());
+        conn.stmt.setInt(6, 0);
+        conn.stmt.setString(7, "");
+        conn.stmt.setLong(8, 0);
+        conn.stmt.setInt(9, doc.getDocSesin());
+        conn.stmt.setInt(10, doc.getDocOpti());
+        conn.stmt.setInt(11, 3);
+        
+        rowInserted = conn.stmt.executeUpdate();
+            newId = conn.stmt.getGeneratedKeys();
+            if(newId.next())
+            {
+                lastInsertedId = newId.getInt(1);
+            }        
+        
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        try{
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
+                    "SELECT document_rekords_product_id, document_rekords_serial, document_rekords_price, document_rekords_problem, document_rekords_repairs, document_rekords_repair_place FROM document_rekords"
+                        +" where document_rekords_document_id=?"
+            );
+            conn.stmt.setInt(1, docId);
+            conn.result = conn.stmt.executeQuery();
+                        
+            while(conn.result.next()){
+                id = conn.result.getInt("document_rekords_product_id");
+                serial = conn.result.getString("document_rekords_serial");
+                price = conn.result.getFloat("document_rekords_price");
+                problem = conn.result.getString("document_rekords_problem");
+                repair = conn.result.getString("document_rekords_repairs");
+                place = conn.result.getInt("document_rekords_repair_place");
+                resultList.add(new DocWSProduct(id, serial, price, problem, repair, place));
+                try{
+                conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
+                    "insert into document_rekords (document_rekords_document_id, document_rekords_product_id, document_rekords_serial, document_rekords_problem, document_rekords_repairs, document_rekords_price, document_rekords_repair_place)"
+                            + " values (?,?,?,?,?,?,?)"
+                    );
+                conn.stmt.setInt(1, lastInsertedId);
+                conn.stmt.setInt(2, id);
+                conn.stmt.setString(3, serial);
+                conn.stmt.setString(4, problem);
+                conn.stmt.setString(5, repair);
+                conn.stmt.setFloat(6, price);
+                conn.stmt.setInt(7, place);
+                
+                conn.stmt.executeUpdate();
+                
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        try{
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
+                    "insert into ps_to_ws_tab (ps_id, ws_id) "
+                            + "values (?,?)"
+            );
+            conn.stmt.setInt(1, docId);
+            conn.stmt.setInt(1, lastInsertedId);
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        
+        conn.disconnect();
+    }
+    
     public List<repairLocationEntity> getRepairLocation(){
         List<repairLocationEntity> resultList = new ArrayList<>();
         int id;
@@ -650,5 +768,29 @@ public class DbQueries {
         }
         conn.disconnect();
         return resultList;
+    }
+    
+    public void acceptDocument(int docId, String status){
+        if("TWORZENIE DOKUMENTU".equals(status)){
+            try{
+                conn.connect();
+                conn.stmt = (PreparedStatement) conn.connection.prepareStatement("update document_tab set document_status=1 where document_id=?");
+                conn.stmt.setInt(1, docId);
+                conn.stmt.executeUpdate();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        if("GOTOWY DO WYDANIA".equals(status)){
+            try{
+                conn.connect();
+                conn.stmt = (PreparedStatement) conn.connection.prepareStatement("update document_tab set document_status=4, document_receipt_date=? where document_id=?");
+                conn.stmt.setLong(1, nowTimestamp());
+                conn.stmt.setInt(2, docId);
+                conn.stmt.executeUpdate();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 }

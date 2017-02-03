@@ -14,10 +14,10 @@ public class wzTableTemplate extends DefaultTableModel{
   
     @Override
     public int getColumnCount() {
-        return 12;
+        return 13;
     }
     
-    String headers[] = new String[] { "ID", "NUMER","ID KLIENTA", "KLIENT", "PRZYJĘTO", "TERMIN", "WYDANO", "NR FVAT", "DATA FVAT", "SESIN", "OPTI","STATUS" };
+    String headers[] = new String[] { "ID", "NUMER","ID KLIENTA", "KLIENT", "PRZYJĘTO", "TERMIN", "WYDANO", "NR FVAT", "DATA FVAT", "SESIN", "OPTI","STATUS","TYP" };
        
     @Override
     public String getColumnName(int column) {

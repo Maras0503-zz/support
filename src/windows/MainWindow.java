@@ -66,10 +66,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuItem2 = new javax.swing.JMenuItem();
         zalogowany = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        kwota = new javax.swing.JTextField();
-        tekst = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -95,22 +91,6 @@ public class MainWindow extends javax.swing.JFrame {
         setResizable(false);
 
         zalogowany.setForeground(new java.awt.Color(0, 204, 51));
-
-        jButton1.setText("Test PDF");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("jButton2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        tekst.setText("jLabel1");
 
         jMenu4.setText("Okno");
 
@@ -208,35 +188,14 @@ public class MainWindow extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(790, Short.MAX_VALUE)
-                        .addComponent(zalogowany))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(172, 172, 172)
-                        .addComponent(kwota, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tekst, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                .addContainerGap(790, Short.MAX_VALUE)
+                .addComponent(zalogowany)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(107, 107, 107)
-                .addComponent(jButton1)
-                .addGap(51, 51, 51)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(kwota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tekst))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 404, Short.MAX_VALUE)
+                .addContainerGap(608, Short.MAX_VALUE)
                 .addComponent(zalogowany)
                 .addContainerGap())
         );
@@ -300,107 +259,6 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     StampPageXofY numeration = new StampPageXofY();
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      Document document = new Document();
-      Footer ft = new Footer();
-      try
-      {  
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("test.pdf"));
-        document.open();
-        Paragraph pr = new Paragraph();
-
-        ft.parentFrame = this;
-        writer.setPageEvent(ft);
-        
-        
-        pr.setAlignment(Element.ALIGN_CENTER);
-        pr.add("Dane firmy:");
-        pr.add(Chunk.NEWLINE);
-        pr.add("NAZWA FIRMY");
-        pr.add(Chunk.NEWLINE);
-        pr.add("ul. TESTOWA 1");
-        pr.add(Chunk.NEWLINE);
-        pr.add("00-554 ZADUPIE");
-        
-        document.add(pr);
-        
-        
-        //PUT IMAGE FROM DRIVE
-        java.awt.Image awtImage =
-        Toolkit.getDefaultToolkit().createImage("C:/GIT/support/logo.jpg");
-        Image img = com.itextpdf.text.Image.getInstance(awtImage, null);
-        img.setAbsolutePosition(0f,0f);
-        document.add(new Paragraph());
-        document.add(img);
-        
-        //ADD TABLE
-        
-        PdfPTable table = new PdfPTable(3); // 3 columns.
-        table.setWidthPercentage(50); //Width 100%
-        table.setSpacingBefore(10f); //Space before table
-        table.setSpacingAfter(10f); //Space after table
- 
-        //Set Column widths
-        float[] columnWidths = {1f, 1f, 1f};
-        table.setWidths(columnWidths);
-        for (int i=0;i<10;i++){
-        PdfPCell cell1 = new PdfPCell(new Paragraph("Cell 1"));
-        cell1.setBorderColor(BaseColor.BLUE);
-        cell1.setPaddingLeft(10);
-        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
- 
-        PdfPCell cell2 = new PdfPCell(new Paragraph("Cell 2"));
-        cell2.setBorderColor(BaseColor.GREEN);
-        cell2.setPaddingLeft(10);
-        cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
- 
-        PdfPCell cell3 = new PdfPCell(new Paragraph("Cell 3"));
-        cell3.setBorderColor(BaseColor.RED);
-        cell3.setPaddingLeft(10);
-        cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
- 
-        table.addCell(cell1);
-        table.addCell(cell2);
-        table.addCell(cell3);
-        } 
-        document.add(table);
-        
-        //CLOSING DOCUMENT
-        document.close(); 
-        writer.close();
-        
-        } catch (DocumentException e)
-        {
-            e.printStackTrace();
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            numeration.manipulatePdf("test.pdf", "test1.pdf");
-        } catch (IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DocumentException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        //OPEN READY DOCUMENT
-        try {
-            Desktop.getDesktop().open(new File("C:/GIT/support/test1.pdf"));
-        } catch (IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        tekst.setText(amountInWords(Float.valueOf(kwota.getText())));
-    }//GEN-LAST:event_jButton2ActionPerformed
     public void onClose(){
         closeAccept clAc = new closeAccept();
         clAc.show();
@@ -447,8 +305,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem addUser;
     private javax.swing.JMenu adminMenu;
     private javax.swing.JMenu documents;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
@@ -459,11 +315,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JTextField kwota;
     private javax.swing.JMenuItem logout;
     private javax.swing.JMenuItem newWZ;
     private javax.swing.JMenu products;
-    private javax.swing.JLabel tekst;
     private javax.swing.JLabel zalogowany;
     // End of variables declaration//GEN-END:variables
 }
