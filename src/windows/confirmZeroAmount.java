@@ -14,44 +14,14 @@ import javax.swing.BorderFactory;
  *
  * @author Marek
  */
-public class confirmDeleteDocument extends javax.swing.JFrame {
-
+public class confirmZeroAmount extends javax.swing.JFrame {
+    wzListWindow parentFrame;
     /**
      * Creates new form confirmDeleteDocument
      */
-    public confirmDeleteDocument() {
+    public confirmZeroAmount() {
         getRootPane().setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.GRAY));
         initComponents();
-    }
-
-    private int documentID;
-    private int selectedRow;
-
-    public int getSelectedRow() {
-        return selectedRow;
-    }
-
-    public void setSelectedRow(int selectedRow) {
-        this.selectedRow = selectedRow;
-    }
-
-    
-    
-    public int getDocumentID() {
-        return documentID;
-    }
-
-    public void setDocumentID(int documentID) {
-        this.documentID = documentID;
-    }
-    private wzListWindow wzL;
-
-    public wzListWindow getWzL() {
-        return wzL;
-    }
-
-    public void setWzL(wzListWindow wzL) {
-        this.wzL = wzL;
     }
     
     /**
@@ -86,7 +56,7 @@ public class confirmDeleteDocument extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 0, 0));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Czy napewno chcesz usunąć dokument?");
+        jLabel1.setText("Czy napewno potwierdzić dokument na 0,00zł ?");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -119,16 +89,17 @@ public class confirmDeleteDocument extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     DbQueries wz = new DbQueries();
     private void confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmActionPerformed
-        wz.delDoc(documentID);
-        wzL.drawTable(wz.getWZDocs());
-        wzL.WZTable.changeSelection(selectedRow , 0, false, false);
-        wzL.refreshWindow();
-        wzL.enable();
-        this.hide();
+        parentFrame.wz.acceptDocument(Integer.valueOf(parentFrame.WZTable.getValueAt(parentFrame.WZTable.getSelectedRow(),0).toString()), parentFrame.WZTable.getValueAt(parentFrame.WZTable.getSelectedRow(),11).toString());
+        parentFrame.toShow = parentFrame.wz.getWZDocs();
+        parentFrame.drawTable(parentFrame.toShow);
+        parentFrame.enable();
+        parentFrame.show();
+        parentFrame.refreshWindow();
+        this.dispose();
     }//GEN-LAST:event_confirmActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        wzL.enable();
+
         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_cancelActionPerformed
 
@@ -149,20 +120,21 @@ public class confirmDeleteDocument extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(confirmDeleteDocument.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(confirmZeroAmount.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(confirmDeleteDocument.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(confirmZeroAmount.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(confirmDeleteDocument.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(confirmZeroAmount.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(confirmDeleteDocument.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(confirmZeroAmount.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new confirmDeleteDocument().setVisible(true);
+                new confirmZeroAmount().setVisible(true);
             }
         });
     }

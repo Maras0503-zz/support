@@ -462,6 +462,39 @@ public class DbQueries {
         conn.disconnect();
         return rowInserted;
     }
+    //GET WS FOR PS
+    
+    public int getWsForPs(int psId){
+        int wsId = 0;
+        try{
+            conn.connect();
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement("select ws_id from ps_to_ws_tab where ps_id=?");
+            conn.stmt.setInt(1, psId);
+            conn.result = conn.stmt.executeQuery();
+            while(conn.result.next()){
+                wsId = conn.result.getInt("ws_id");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return wsId;
+    }
+    
+    public int getPSForWs(int wsId){
+        int psId = 0;
+        try{
+            conn.connect();
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement("select ps_id from ps_to_ws_tab where ws_id=?");
+            conn.stmt.setInt(1, wsId);
+            conn.result = conn.stmt.executeQuery();
+            while(conn.result.next()){
+                psId = conn.result.getInt("ps_id");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return psId;
+    }
     //DELETE DOCUMENT
     public void delDoc(int docId){
         DocEntity doc = getDocument(docId);
@@ -777,12 +810,36 @@ public class DbQueries {
         return resultList;
     }
     
+    //GET LAST DOC FOR DOC TYPE
+    public int getLastNumber(int docType){
+        int lastNo = 0;
+        try{
+            conn.connect();
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement("select document_number from document_tab where document_type=? order by document_number desc limit 1");
+            conn.stmt.setInt(1, docType);
+            conn.result = conn.stmt.executeQuery();
+            while(conn.result.next()){
+                lastNo = conn.result.getInt("document_number");
+            }
+        }catch( Exception e){
+            e.printStackTrace();
+        }
+        return lastNo;
+    }
+    
     public void acceptDocument(int docId, String status){
+        DocEntity doc= getDocument(docId);
+        int psId = 0;
+        if("GOTOWY DO WYDANIA".equals(status)){
+            psId = getPSForWs(docId);
+        }
+        int lastNo = getLastNumber(doc.getDocType());
         if("TWORZENIE DOKUMENTU".equals(status)){
             try{
                 conn.connect();
-                conn.stmt = (PreparedStatement) conn.connection.prepareStatement("update document_tab set document_status=1 where document_id=?");
-                conn.stmt.setInt(1, docId);
+                conn.stmt = (PreparedStatement) conn.connection.prepareStatement("update document_tab set document_status=1, document_number=? where document_id=?");
+                conn.stmt.setInt(1, lastNo+1);
+                conn.stmt.setInt(2, docId);
                 conn.stmt.executeUpdate();
             }catch(Exception e){
                 e.printStackTrace();
@@ -791,9 +848,18 @@ public class DbQueries {
         if("GOTOWY DO WYDANIA".equals(status)){
             try{
                 conn.connect();
-                conn.stmt = (PreparedStatement) conn.connection.prepareStatement("update document_tab set document_status=4, document_receipt_date=? where document_id=?");
+                conn.stmt = (PreparedStatement) conn.connection.prepareStatement("update document_tab set document_status=4, document_receipt_date=?, document_number=? where document_id=?");
                 conn.stmt.setLong(1, nowTimestamp());
-                conn.stmt.setInt(2, docId);
+                conn.stmt.setInt(2, lastNo+1);
+                conn.stmt.setInt(3, docId);
+                conn.stmt.executeUpdate();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                conn.connect();
+                conn.stmt = (PreparedStatement) conn.connection.prepareStatement("update document_tab set document_status=4 where document_id=?");
+                conn.stmt.setLong(1, psId);
                 conn.stmt.executeUpdate();
             }catch(Exception e){
                 e.printStackTrace();

@@ -85,7 +85,9 @@ public class wzListWindow extends javax.swing.JFrame {
                 refreshWindow();
             }
         });
+        if(!toShow.isEmpty()){
         WZTable.changeSelection(0, 0, false, false);
+        }
     }
     public void refreshWindow(){
         long close = timestampToLong(Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 5).toString()))-86400000;
@@ -559,7 +561,7 @@ public class wzListWindow extends javax.swing.JFrame {
             this.disable();
             allert.show();
         }else if(Float.valueOf(nettoLabel.getText().replace(",", ".")) == 0){
-            DocumentAmountAlert allert = new DocumentAmountAlert();
+            confirmZeroAmount allert = new confirmZeroAmount();
             allert.parentFrame = this;
             this.disable();
             allert.show();
@@ -567,7 +569,8 @@ public class wzListWindow extends javax.swing.JFrame {
             wz.acceptDocument(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString()), WZTable.getValueAt(WZTable.getSelectedRow(),11).toString());
             toShow = wz.getWZDocs();
             drawTable(toShow);
-         }
+        }
+        refreshWindow();
     }//GEN-LAST:event_accDocActionPerformed
     public PdfPCell createCell(String content, int alignment) throws IOException, DocumentException {
         BaseFont ft = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1250, BaseFont.EMBEDDED);
@@ -840,11 +843,19 @@ public class wzListWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_printDocActionPerformed
 
     private void endDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endDocActionPerformed
-        wz.createWsDocumentFromPs(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString()));
-        toShow = wz.getWZDocs();
-        drawTable(toShow);
-        WZTable.changeSelection(0, 0, false, false);
-        refreshWindow();
+        int wsId = wz.getWsForPs(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString()));
+        if(wsId==0){
+            wz.createWsDocumentFromPs(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString()));
+            toShow = wz.getWZDocs();
+            drawTable(toShow);
+            WZTable.changeSelection(0, 0, false, false);
+            refreshWindow();
+        }else{
+            DocumentCreatedAlert docCreated = new DocumentCreatedAlert(wsId);
+            docCreated.parentFrame = this;
+            this.disable();
+            docCreated.show();
+        }
     }//GEN-LAST:event_endDocActionPerformed
 
     /**
