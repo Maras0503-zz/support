@@ -91,7 +91,6 @@ public class confirmDeleteProductFromDocument extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int temp = parentFrame.productTable.getSelectedRow();
         int docId = parentFrame.doc.getId();
         int prodId = parentFrame.db.getProductId(parentFrame.productTable.getValueAt(parentFrame.productTable.getSelectedRow(),1).toString()); 
         String serial = parentFrame.productTable.getValueAt(parentFrame.productTable.getSelectedRow(),2).toString();

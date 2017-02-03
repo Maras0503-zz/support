@@ -62,7 +62,7 @@ import utilities.myRenderer;
 public class wzListWindow extends javax.swing.JFrame {
     public MainWindow parentFrame;
     public int newWzContracorId;
-    int selectedDocId;
+    int selectedDocId =0;
     float snetto = 0;
     int setNowModelCounter = 0;
     Long tmpTime;
@@ -558,6 +558,11 @@ public class wzListWindow extends javax.swing.JFrame {
             allert.parentFrame = this;
             this.disable();
             allert.show();
+        }else if(Float.valueOf(nettoLabel.getText().replace(",", ".")) == 0){
+            DocumentAmountAlert allert = new DocumentAmountAlert();
+            allert.parentFrame = this;
+            this.disable();
+            allert.show();
         }else{
             wz.acceptDocument(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(),0).toString()), WZTable.getValueAt(WZTable.getSelectedRow(),11).toString());
             toShow = wz.getWZDocs();
@@ -839,6 +844,7 @@ public class wzListWindow extends javax.swing.JFrame {
         toShow = wz.getWZDocs();
         drawTable(toShow);
         WZTable.changeSelection(0, 0, false, false);
+        refreshWindow();
     }//GEN-LAST:event_endDocActionPerformed
 
     /**

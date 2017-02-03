@@ -462,21 +462,27 @@ public class DbQueries {
         conn.disconnect();
         return rowInserted;
     }
-    
     //DELETE DOCUMENT
     public void delDoc(int docId){
+        DocEntity doc = getDocument(docId);
         conn.connect();
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
                     "delete from document_tab where document_id=?"
-        );
-        conn.stmt.setInt(1, docId);
-        
-        int rowInserted = conn.stmt.executeUpdate();
-        }
-        catch(Exception e){
+            );
+            conn.stmt.setInt(1, docId);
+
+            int rowInserted = conn.stmt.executeUpdate();
+            if(doc.getDocType()==2){
+                conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
+                     "delete from ps_to_ws_tab where ws_id=?"
+                );
+                conn.stmt.setInt(1, docId);
+                rowInserted = conn.stmt.executeUpdate();
+            }      
+        }catch(Exception e){
             e.printStackTrace();
-        }
+        }    
         try{
             conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
                     "delete from document_rekords where document_rekords_document_id=?"
@@ -738,7 +744,8 @@ public class DbQueries {
                             + "values (?,?)"
             );
             conn.stmt.setInt(1, docId);
-            conn.stmt.setInt(1, lastInsertedId);
+            conn.stmt.setInt(2, lastInsertedId);
+            conn.stmt.executeUpdate();
             
         }catch(Exception e){
             e.printStackTrace();
