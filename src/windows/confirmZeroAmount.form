@@ -78,7 +78,7 @@
           <Color blue="0" green="0" red="ff" type="rgb"/>
         </Property>
         <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="text" type="java.lang.String" value="Czy napewno chcesz potwierdzi&#x107; dokument na 0,00 z&#x142; ?"/>
+        <Property name="text" type="java.lang.String" value="Czy napewno chcesz usun&#x105;&#x107; dokument?"/>
       </Properties>
     </Component>
   </SubComponents>
