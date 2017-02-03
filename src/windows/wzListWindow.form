@@ -113,13 +113,13 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Group type="103" groupAlignment="3" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="delWZBtt" alignment="0" max="32767" attributes="0"/>
-                  <Component id="newWZBtt" alignment="3" max="32767" attributes="0"/>
                   <Component id="openWZBtt" alignment="0" max="32767" attributes="0"/>
                   <Component id="accDoc" alignment="0" max="32767" attributes="0"/>
                   <Component id="printDoc" alignment="0" max="32767" attributes="0"/>
                   <Component id="endDoc" alignment="0" max="32767" attributes="0"/>
+                  <Component id="newWZBtt" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="300" max="-2" attributes="0"/>
@@ -149,7 +149,7 @@
         <Component class="javax.swing.JTable" name="WZTable">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="12" rowCount="1">
+              <Table columnCount="13" rowCount="1">
                 <Column editable="true" title="ID" type="java.lang.Integer"/>
                 <Column editable="true" title="NUMER" type="java.lang.String"/>
                 <Column editable="true" title="ID KLIENTA" type="java.lang.Object"/>
@@ -162,10 +162,16 @@
                 <Column editable="true" title="SESIN" type="java.lang.Object"/>
                 <Column editable="true" title="OPTI" type="java.lang.Object"/>
                 <Column editable="true" title="STATUS" type="java.lang.Object"/>
+                <Column editable="true" title="TYP" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
                   <Editor/>
@@ -391,7 +397,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/images/editDoc.png"/>
         </Property>
-        <Property name="toolTipText" type="java.lang.String" value="OTW&#xd3;RZ DOKUMENT"/>
+        <Property name="toolTipText" type="java.lang.String" value="EDYTUJ DOKUMENT"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[40, 40]"/>
         </Property>
@@ -479,7 +485,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/images/endDoc.png"/>
         </Property>
-        <Property name="toolTipText" type="java.lang.String" value="ZATWIERDZ DOKUMENT"/>
+        <Property name="toolTipText" type="java.lang.String" value="WYSTAW DOKUMENT KO&#x143;COWY"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[40, 40]"/>
         </Property>

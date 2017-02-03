@@ -23,6 +23,7 @@ import static utilities.TimeFunctions.*;
  */
 public class ContractorChoice extends javax.swing.JFrame {
     DbQueries wz = new DbQueries();
+    public List<ContractorEntity> contractorsList;
     wzListWindow parentFrameWzWindow;
     int selM;
     int selY;
@@ -175,6 +176,11 @@ public class ContractorChoice extends javax.swing.JFrame {
         jScrollPane1.setViewportView(ContractorTable);
 
         jButton3.setText("DODAJ KLIENTA");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -371,11 +377,11 @@ public class ContractorChoice extends javax.swing.JFrame {
 
     private void findContractorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findContractorActionPerformed
         if (parentFrameId == 1){
-            List<ContractorEntity> contractorsList=wz.findContracor(nameBox.getText(), nipBox.getText(), false);
+            contractorsList=wz.findContracor(nameBox.getText(), nipBox.getText());
             drawTable(contractorsList);
         }
         if (parentFrameId == 2){
-            List<ContractorEntity> contractorsList=wz.findContracor(nameBox.getText(), nipBox.getText(), true);
+            contractorsList=wz.findContracor(nameBox.getText(), nipBox.getText());
             drawTable(contractorsList);            
         }
     }//GEN-LAST:event_findContractorActionPerformed
@@ -410,6 +416,13 @@ public class ContractorChoice extends javax.swing.JFrame {
             this.hide();    
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        addContractor addCon = new addContractor();
+        addCon.parentFrame = this;
+        this.disable();
+        addCon.show();
+    }//GEN-LAST:event_jButton3ActionPerformed
     public void drawTable(List<ContractorEntity> contractorsList){
         ContractorTable.getCellSelectionEnabled();
         ChoiceContractorsTableTemplate dtm = new ChoiceContractorsTableTemplate();
@@ -485,7 +498,7 @@ public class ContractorChoice extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JComboBox<String> minuteCombo;
     private javax.swing.JComboBox<String> monthCombo;
-    private javax.swing.JTextField nameBox;
+    public javax.swing.JTextField nameBox;
     private javax.swing.JTextField nipBox;
     private javax.swing.JTextField optiBox;
     private javax.swing.JTextField sesinBox;

@@ -30,24 +30,27 @@ import static utilities.TimeFunctions.timestampToLong;
 public class DbQueries {
     public DbConnect conn = new DbConnect();
     
-    //WITHDRAW PRODUCT
     
-    public void withdrawUnwithdraw(int id, int status){
-        conn.connect();
-        try{
-            conn.stmt = (PreparedStatement) conn.connection.prepareStatement(
-                    "UPDATE product_tab SET product_status=? WHERE product_id=?"
-        );
-        conn.stmt.setInt(1, status);
-        conn.stmt.setInt(2, id);
-        
-        int rowInserted = conn.stmt.executeUpdate();
-        }
-        catch(Exception e){
+    //ADD CONTRACTOR
+    public void addContractor(String name, String nip, String postal, String city, String street, String country, String phone, String email){
+        try {
+            conn.connect();
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement("insert into contractor_tab (contractor_name, contractor_nip, contractor_postal_code, contractor_city, contractor_street, contractor_country, contractor_phone, contractor_email) values (?,?,?,?,?,?,?,?)");
+            conn.stmt.setString(1, name);
+            conn.stmt.setString(2, nip);
+            conn.stmt.setString(3, postal);
+            conn.stmt.setString(4, city);
+            conn.stmt.setString(5, street);
+            conn.stmt.setString(6, country);
+            conn.stmt.setString(7, phone);
+            conn.stmt.setString(8, email);
+            conn.stmt.executeUpdate();
+            
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        conn.disconnect();
     }
+    
     //GET LIST OF GROUPS FROM DB
     public List<groupEntity> getGroups(){
         List<groupEntity> ans = new ArrayList<>();
@@ -94,18 +97,16 @@ public class DbQueries {
     
     //LOOKING FOR CONTRACTOR
     
-    public List<ContractorEntity> findContracor(String namePart, String nipPart, boolean IsProvider){
+    public List<ContractorEntity> findContracor(String namePart, String nipPart){
        List<ContractorEntity> resultList = new ArrayList<>();
        int id, provider;
        String name, city, street, nip, postalCode, country, phone, email;
        
        conn.connect();
        try{
-            if(IsProvider == false){
-                conn.stmt = (PreparedStatement) conn.connection.prepareStatement("SELECT * FROM contractor_tab WHERE contractor_name LIKE ? AND replace(contractor_nip,'-','') LIKE ?");
-            }else{
-                conn.stmt = (PreparedStatement) conn.connection.prepareStatement("SELECT * FROM contractor_tab WHERE contractor_name LIKE ? AND replace(contractor_nip,'-','') LIKE ? AND contractor_provider=1");
-            }
+       
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement("SELECT * FROM contractor_tab WHERE contractor_name LIKE ? AND replace(contractor_nip,'-','') LIKE ?");
+
             conn.stmt.setString(1, '%'+namePart+'%');
             conn.stmt.setString(2, '%'+nipPart+'%');
             conn.result = conn.stmt.executeQuery();
@@ -180,7 +181,7 @@ public class DbQueries {
                             + " FROM document_tab"
                             + " inner join contractor_tab on document_tab.document_contractor_id=contractor_tab.contractor_id"
                             + " inner join status_tab on document_tab.document_status = status_tab.status_id"
-                            + " where (document_type=1 or document_type=2) and document_number <> 0 order by document_number desc limit 30"
+                            + " where (document_type=1 or document_type=2) and document_number <> 0 order by document_number desc"
             );
             conn.result = conn.stmt.executeQuery();
                         

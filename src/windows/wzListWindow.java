@@ -284,14 +284,14 @@ public class wzListWindow extends javax.swing.JFrame {
 
         WZTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "NUMER", "ID KLIENTA", "KLIENT", "PRZYJĘTO", "TERMIN", "WYDANO", "NR FVAT", "DATA FVAT", "SESIN", "OPTI", "STATUS"
+                "ID", "NUMER", "ID KLIENTA", "KLIENT", "PRZYJĘTO", "TERMIN", "WYDANO", "NR FVAT", "DATA FVAT", "SESIN", "OPTI", "STATUS", "TYP"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -346,7 +346,7 @@ public class wzListWindow extends javax.swing.JFrame {
 
         openWZBtt.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         openWZBtt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/editDoc.png"))); // NOI18N
-        openWZBtt.setToolTipText("OTWÓRZ DOKUMENT");
+        openWZBtt.setToolTipText("EDYTUJ DOKUMENT");
         openWZBtt.setMaximumSize(new java.awt.Dimension(40, 40));
         openWZBtt.setMinimumSize(new java.awt.Dimension(40, 40));
         openWZBtt.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -389,7 +389,7 @@ public class wzListWindow extends javax.swing.JFrame {
 
         endDoc.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         endDoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/endDoc.png"))); // NOI18N
-        endDoc.setToolTipText("ZATWIERDZ DOKUMENT");
+        endDoc.setToolTipText("WYSTAW DOKUMENT KOŃCOWY");
         endDoc.setMaximumSize(new java.awt.Dimension(40, 40));
         endDoc.setMinimumSize(new java.awt.Dimension(40, 40));
         endDoc.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -468,13 +468,13 @@ public class wzListWindow extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(delWZBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(newWZBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(openWZBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(accDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(printDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(endDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(endDoc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(newWZBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -606,24 +606,32 @@ public class wzListWindow extends javax.swing.JFrame {
         if("SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
         int rok = Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 4).toString()).getYear()+1900;
         Paragraph nr = new Paragraph("WYADNIE SPRZĘTU NR ", ffont);
-        String yearSlashnr = rok+"/"+WZTable.getValueAt(WZTable.getSelectedRow(), 1).toString();
+        String yearSlashnr = WZTable.getValueAt(WZTable.getSelectedRow(), 1).toString()+"/"+rok;
         nr.add(new Chunk(yearSlashnr,bold));
-        nr.add(Chunk.NEWLINE);
-        nr.add(Chunk.NEWLINE);
         nr.setAlignment(Element.ALIGN_LEFT);
         document.add(nr);
+        if("WS".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 12).toString())){
+        pr.setAlignment(Element.ALIGN_LEFT);
+        pr.add("DOTYCZY: PS NR "+wz.getPSForWs(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 0).toString()))+"/"+rok);
+        document.add(pr);
+        pr.clear();
+        pr.setAlignment(Element.ALIGN_RIGHT);
         }
+        }
+        
+        
         if("SPRZĘT PRZYJĘTY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
         int rok = Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 4).toString()).getYear()+1900;
         Paragraph nr = new Paragraph("PRZYJĘCIE SPRZĘTU NR ", ffont);
         String yearSlashnr = rok+"/"+WZTable.getValueAt(WZTable.getSelectedRow(), 1).toString();
         nr.add(new Chunk(yearSlashnr,bold));
-        nr.add(Chunk.NEWLINE);
-        nr.add(Chunk.NEWLINE);
         nr.setAlignment(Element.ALIGN_LEFT);
         document.add(nr);
         }
-        
+        pr.clear();
+        pr.add(Chunk.NEWLINE);
+        pr.add(Chunk.NEWLINE);
+        document.add(pr);
         pr.clear();
         pr.setAlignment(Element.ALIGN_LEFT);
         pr.add(comp.getName());
