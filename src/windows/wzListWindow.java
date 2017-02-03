@@ -82,7 +82,13 @@ public class wzListWindow extends javax.swing.JFrame {
         selectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                long close = timestampToLong(Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 5).toString()))-86400000;
+                refreshWindow();
+            }
+        });
+        WZTable.changeSelection(0, 0, false, false);
+    }
+    public void refreshWindow(){
+        long close = timestampToLong(Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 5).toString()))-86400000;
                 long delay = timestampToLong(Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 5).toString()));
                 if((nowTimestamp() > delay && (!"SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString()) && !"TWORZENIE DOKUMENTU".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())))){
                     terminComm.setText("TERMIN PRZEKROCZONY !");
@@ -127,10 +133,8 @@ public class wzListWindow extends javax.swing.JFrame {
                 productToShow = wz.getDocProducts(selectedDocId);
                 contractorNameLabel.setText(WZTable.getValueAt(WZTable.getSelectedRow(),3).toString());
                 drawProductTable(productToShow);
-            }
-        });
-        WZTable.changeSelection(0, 0, false, false);
     }
+    
     public void drawTable(List<DocEntity> docList){
         if(setNowModelCounter == 0){
         WZTable.setModel(dtm);

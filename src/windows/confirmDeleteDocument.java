@@ -121,8 +121,8 @@ public class confirmDeleteDocument extends javax.swing.JFrame {
     private void confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmActionPerformed
         wz.delDoc(documentID);
         wzL.drawTable(wz.getWZDocs());
-        wzL.WZTable.changeSelection(selectedRow+1 , 0, false, false);
         wzL.WZTable.changeSelection(selectedRow , 0, false, false);
+        wzL.refreshWindow();
         wzL.enable();
         this.hide();
     }//GEN-LAST:event_confirmActionPerformed
