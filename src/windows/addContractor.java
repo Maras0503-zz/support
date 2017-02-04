@@ -206,7 +206,7 @@ public class addContractor extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(!"".equals(nameBox.getText()) && !"".equals(postalBox.getText()) && !"".equals(cityBox.getText()) && !"".equals(streetBox.getText()) && !"".equals(phoneBox.getText())){
-            db.addContractor(nameBox.getText(), nipBox.getText(), postalBox.getText(), cityBox.getText(), streetBox.getText(), countryBox.getText(), phoneBox.getText(), emailBox.getText());
+            db.addContractor(nameBox.getText().toUpperCase(), nipBox.getText().toUpperCase(), postalBox.getText().toUpperCase(), cityBox.getText().toUpperCase(), streetBox.getText().toUpperCase(), countryBox.getText().toUpperCase(), phoneBox.getText().toUpperCase(), emailBox.getText().toUpperCase());
             parentFrame.contractorsList=parentFrame.wz.findContracor(nameBox.getText(), "");
             parentFrame.drawTable(parentFrame.contractorsList);
             parentFrame.enable();

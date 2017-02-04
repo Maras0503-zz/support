@@ -29,7 +29,23 @@ import static utilities.TimeFunctions.timestampToLong;
  */
 public class DbQueries {
     public DbConnect conn = new DbConnect();
-    
+    //EDIT POS
+    public void editPos(int docId, String price, String problem, String repair, String oldPrice, String oldProblem, String oldRepair ){
+        try {
+            conn.connect();
+            conn.stmt = (PreparedStatement) conn.connection.prepareStatement("update document_rekords set document_rekords_problem=?, document_rekords_repairs=?, document_rekords_price=? where document_rekords_problem=? and document_rekords_repairs=? and document_rekords_price=? and document_rekords_document_id=?");
+            conn.stmt.setString(1, problem);
+            conn.stmt.setString(2, repair);
+            conn.stmt.setFloat(3, Float.valueOf(price.replace(",", ".")));
+            conn.stmt.setString(4, oldProblem);
+            conn.stmt.setString(5, oldRepair);
+            conn.stmt.setFloat(6, Float.valueOf(oldPrice.replace(",", ".")));
+            conn.stmt.setInt(7, docId);
+            conn.stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     //ADD CONTRACTOR
     public void addContractor(String name, String nip, String postal, String city, String street, String country, String phone, String email){

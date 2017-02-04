@@ -604,15 +604,15 @@ public class wzListWindow extends javax.swing.JFrame {
         document.add(pr);
         pr.clear();
         if("SPRZĘT WYDANY".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 11).toString())){
-        int rok = Timestamp.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 4).toString()).getYear()+1900;
         Paragraph nr = new Paragraph("WYADNIE SPRZĘTU NR ", ffont);
-        String yearSlashnr = WZTable.getValueAt(WZTable.getSelectedRow(), 1).toString()+"/"+rok;
+        String yearSlashnr = WZTable.getValueAt(WZTable.getSelectedRow(), 1).toString();
         nr.add(new Chunk(yearSlashnr,bold));
         nr.setAlignment(Element.ALIGN_LEFT);
         document.add(nr);
         if("WS".equals(WZTable.getValueAt(WZTable.getSelectedRow(), 12).toString())){
         pr.setAlignment(Element.ALIGN_LEFT);
-        pr.add("DOTYCZY: PS NR "+wz.getPSForWs(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 0).toString()))+"/"+rok);
+        DocEntity docPS = wz.getDocument(wz.getPSForWs(Integer.valueOf(WZTable.getValueAt(WZTable.getSelectedRow(), 0).toString())));
+        pr.add("DOTYCZY: PS NR "+docPS.getDocNumber());
         document.add(pr);
         pr.clear();
         pr.setAlignment(Element.ALIGN_RIGHT);

@@ -101,6 +101,8 @@ public class confirmZeroAmount extends javax.swing.JFrame {
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
 
         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        parentFrame.enable();
+        parentFrame.show();
     }//GEN-LAST:event_cancelActionPerformed
 
     /**

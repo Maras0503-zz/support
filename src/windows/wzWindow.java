@@ -91,6 +91,7 @@ public class wzWindow extends javax.swing.JFrame {
         emailLab = new javax.swing.JLabel();
         addBtt = new javax.swing.JButton();
         delBtt = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -261,6 +262,14 @@ public class wzWindow extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jButton1.setText("Edytuj zaznaczony");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         jMenu2.setText("Okno");
 
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
@@ -296,6 +305,8 @@ public class wzWindow extends javax.swing.JFrame {
                         .addComponent(bruttoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(delBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -314,7 +325,9 @@ public class wzWindow extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(addBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(delBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(delBtt, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -348,6 +361,16 @@ public class wzWindow extends javax.swing.JFrame {
         this.disable();
         delPos.show();
     }//GEN-LAST:event_delBttActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        editPos edit = new editPos();
+        edit.priceBox.setText(productTable.getValueAt(productTable.getSelectedRow(), 3).toString());
+        edit.problemText.setText(productTable.getValueAt(productTable.getSelectedRow(), 4).toString());
+        edit.repairText.setText(productTable.getValueAt(productTable.getSelectedRow(), 5).toString());
+        edit.parentFrame = this;
+        this.disable();
+        edit.show();
+    }//GEN-LAST:event_jButton1ActionPerformed
     float snetto;
     public void drawProductTable(List<DocProductEntity> prodList){
         ProductOnDocumentTableTemplate dtm = new ProductOnDocumentTableTemplate();
@@ -441,6 +464,7 @@ public class wzWindow extends javax.swing.JFrame {
     private javax.swing.JButton delBtt;
     private javax.swing.JLabel emailLab;
     private javax.swing.JLabel idLab;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
