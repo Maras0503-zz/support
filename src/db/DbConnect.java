@@ -41,7 +41,7 @@ public class DbConnect {
       catch (ClassNotFoundException | SQLException e) {
       }
       finally{
-          saveLog();
+          //saveLog();
       }
     }
 

@@ -8014,3 +8014,14 @@
 2017-02-04 01:31:28.835-->> Nie odnaleziono serwera
 2017-02-04 01:31:29.108-->> Nie odnaleziono serwera
 2017-02-04 01:31:29.383-->> Nie odnaleziono serwera
+2017-02-04 09:14:15.87-->> Nie odnaleziono serwera
+2017-02-04 09:17:50.027-->> Nie odnaleziono serwera
+2017-02-04 09:17:50.516-->> Nie odnaleziono serwera
+2017-02-04 09:17:55.986-->> Nie odnaleziono serwera
+2017-02-04 09:17:56.575-->> Nie odnaleziono serwera
+2017-02-04 09:17:58.529-->> Nie odnaleziono serwera
+2017-02-04 09:26:59.215-->> Nie odnaleziono serwera
+2017-02-04 09:26:59.721-->> Nie odnaleziono serwera
+2017-02-04 09:27:03.855-->> Nie odnaleziono serwera
+2017-02-04 09:27:04.5-->> Nie odnaleziono serwera
+2017-02-04 09:27:06.419-->> Nie odnaleziono serwera

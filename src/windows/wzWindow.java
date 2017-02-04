@@ -40,6 +40,7 @@ public class wzWindow extends javax.swing.JFrame {
         if("SPRZĘT WYDANY".equals(doc.getDocStatus()) || "SPRZĘT PRZYJĘTY".equals(doc.getDocStatus())){
             addBtt.hide();
             delBtt.hide();
+            editBtt.hide();
         }
         contractor = db.getContractor(doc.getDocContractorId());
         idLab.setText(String.valueOf(contractor.getId()));
@@ -91,7 +92,7 @@ public class wzWindow extends javax.swing.JFrame {
         emailLab = new javax.swing.JLabel();
         addBtt = new javax.swing.JButton();
         delBtt = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        editBtt = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -262,11 +263,11 @@ public class wzWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jButton1.setText("Edytuj zaznaczony");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        editBtt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        editBtt.setText("Edytuj zaznaczony");
+        editBtt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                editBttActionPerformed(evt);
             }
         });
 
@@ -305,7 +306,7 @@ public class wzWindow extends javax.swing.JFrame {
                         .addComponent(bruttoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(editBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(delBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
@@ -326,7 +327,7 @@ public class wzWindow extends javax.swing.JFrame {
                         .addComponent(addBtt, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(editBtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(delBtt, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -362,7 +363,7 @@ public class wzWindow extends javax.swing.JFrame {
         delPos.show();
     }//GEN-LAST:event_delBttActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void editBttActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBttActionPerformed
         editPos edit = new editPos();
         edit.priceBox.setText(productTable.getValueAt(productTable.getSelectedRow(), 3).toString());
         edit.problemText.setText(productTable.getValueAt(productTable.getSelectedRow(), 4).toString());
@@ -370,7 +371,7 @@ public class wzWindow extends javax.swing.JFrame {
         edit.parentFrame = this;
         this.disable();
         edit.show();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_editBttActionPerformed
     float snetto;
     public void drawProductTable(List<DocProductEntity> prodList){
         ProductOnDocumentTableTemplate dtm = new ProductOnDocumentTableTemplate();
@@ -462,9 +463,9 @@ public class wzWindow extends javax.swing.JFrame {
     private javax.swing.JLabel cityLab;
     private javax.swing.JLabel codeLab;
     private javax.swing.JButton delBtt;
+    private javax.swing.JButton editBtt;
     private javax.swing.JLabel emailLab;
     private javax.swing.JLabel idLab;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

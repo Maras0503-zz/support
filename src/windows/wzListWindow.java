@@ -844,7 +844,7 @@ public class wzListWindow extends javax.swing.JFrame {
         }
         //OPEN READY DOCUMENT
         try {
-            Desktop.getDesktop().open(new File("C:/GIT/support/"+tempName+".pdf"));
+            Desktop.getDesktop().open(new File(tempName+".pdf"));
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }

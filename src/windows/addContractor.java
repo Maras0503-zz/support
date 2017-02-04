@@ -6,11 +6,9 @@
 package windows;
 
 import db.DbQueries;
+import java.awt.Color;
+import javax.swing.BorderFactory;
 
-/**
- *
- * @author Marek
- */
 public class addContractor extends javax.swing.JFrame {
     ContractorChoice parentFrame;
     DbQueries db = new DbQueries();
@@ -18,6 +16,7 @@ public class addContractor extends javax.swing.JFrame {
      * Creates new form addContractor
      */
     public addContractor() {
+        getRootPane().setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.GRAY));
         initComponents();
     }
 

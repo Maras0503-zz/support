@@ -60,9 +60,6 @@ public class LoginPage extends javax.swing.JFrame {
             }
         });
 
-        loginBox.setText("Maras0503");
-
-        passBox.setText("maras0502");
         passBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 passBoxActionPerformed(evt);
